@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "619791092502",
+    "firebase_url": "https://treding-only-94d81-default-rtdb.firebaseio.com",
+    "project_id": "treding-only-94d81",
+    "storage_bucket": "treding-only-94d81.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:619791092502:android:6de734bf48a0207dd45e37",
+        "android_client_info": {
+          "package_name": "com.example.treding"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATpMNJ1_XYK9v9TrMrpets6hBNUXouCss"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
