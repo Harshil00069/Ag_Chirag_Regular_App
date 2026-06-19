@@ -1,131 +1,140 @@
-/*import 'dart:convert';
-import 'dart:developer';
-
 import 'package:get/get.dart';
 import 'package:treding/Api/api_implementor.dart';
-import 'package:dio/dio.dart' as dio;
 import 'package:treding/Controllers/homepage_controller.dart';
-import 'package:treding/model/order_list_model.dart';
-
-import '../model/user_model.dart';
+import 'package:treding/model/modify_order_model.dart';
+import 'package:treding/model/order_book_data_model.dart';
+import 'package:treding/model/place_order_model.dart';
+import 'dashboard_controller.dart';
 
 class OrderController extends GetxController {
-  HomepageCtr homepageCtr = Get.find();
-  List<OrderListModel> orderList = [];
-  List<OrderListModel> orderList2 = [];
-  List<OrderListModel> letestorderList = [];
-  List<OrderListModel> commandataorderList = [];
-  List <String?> commandata = [];
-  List <String?> commanUserList = [];
+  HomepageCtr homeScreenController = Get.put(HomepageCtr());
+  DashboardCtr ctrl = Get.put(DashboardCtr());
+  List<OrderBookData> commonOrderList = [];
+  List<OrderBookData> orderList = [];
+  List<PlaceOrderModel> placeOrderList = [];
+  List<ModifyOrderModel> orderModifyList = [];
 
+  RxBool isOrderLoading = false.obs;
+  RxBool isPlaceOrderLoading = false.obs;
+  RxBool isOrderModifyLoading = false.obs;
 
+  List<String> statusList = [
+    "open",
+    "after market order req received",
+    "cancelled after market order",
+    "cancelled",
+    "rejected"
+  ];
 
- Future<void> getOrderList() async {
+  Future<void> getOrdersListApi() async {
     orderList.clear();
-    orderList2.clear();
-    commandataorderList.clear();
-    letestorderList.clear();
-    for (var item in homepageCtr.userList) {
-      dio.Response? response = await ApiImplementor.getOrderListApiImplementer(
-          PrivateKey: item.privateKey ?? "", token: item.jwtToken ?? "");
+    isOrderLoading.value = true;
+    try {
+      var response = await ApiImplementor.getOrdersListApiImplementer(
+          userList: homeScreenController.commonClientJsonDataList);
 
-      if (response != null &&
-          response.statusCode == 200 &&
-          response.data != null&&
-      response.data["status"]
-      ) {
-        for (var orderItem in response.data['data']){
-          print(orderItem.toString());
-          OrderListModel orderListModel=OrderListModel.fromJson(orderItem);
-          orderListModel.userModel=item;
-          orderList.add(orderListModel);
-          orderList2.add(orderListModel);
-
+      if (response.results.isNotEmpty) {
+        for (int i = 0; i < response.results.length; i++) {
+          orderList.addAll(response.results[i].data);
         }
-      }
-    }
-    orderList.sort((a, b) => b.tradingsymbol.toString().compareTo(a.tradingsymbol.toString()));
-    orderList.sort((a, b) => b.price.toString().compareTo(a.price.toString()));
+        if (orderList.isNotEmpty) {
+          for (int k = 0; k < orderList.length; k++) {
+            orderList[k].variety = "NORMAL";
+            int index = homeScreenController.userList.indexWhere(
+                (data) => data.clientcode == orderList[k].clientcode);
 
-
-
-    print("commandata=> ${commandata.length}");
-    print("orderList=> ${orderList.length}");
-
-
-   update();
-}
-
-}*/
-
-
-
-import 'dart:convert';
-import 'dart:developer';
-
-import 'package:get/get.dart';
-import 'package:treding/Api/api_implementor.dart';
-import 'package:dio/dio.dart' as dio;
-import 'package:treding/Controllers/homepage_controller.dart';
-import 'package:treding/model/order_list_model.dart';
-
-class OrderController extends GetxController {
-  HomepageCtr homepageCtr = Get.find();
-  List<OrderListModel> orderList = [];
-  List<OrderListModel> commonOrderList = [];
-  List<OrderListModel> letestorderList = [];
-  List <String?> commandata =[];
-  RxBool isDataLoading = false.obs;
-
-  List <String> statusList= ["open","after market order req received","cancelled after market order","cancelled","rejected"];
-
-  getOrderList() async {
-    orderList.clear();
-    letestorderList.clear();
-    isDataLoading.value = true;
-    for (var item in homepageCtr.userList) {
-      if(item.isUserEnable == true){
-        dio.Response? response = await ApiImplementor.getOrderListApiImplementer(
-            PrivateKey: item.privateKey ?? "", token: item.jwtToken ?? "");
-
-
-        if (response != null && response.statusCode == 200 && response.data['data'] != null&& response.data["status"]) {
-
-          for (var orderItem in response.data['data']){
-            print(orderItem.toString());
-            OrderListModel orderListModel=OrderListModel.fromJson(orderItem);
-            orderListModel.userModel=item;
-            orderList.add(orderListModel);
+            if (index != -1) {
+              // 3. Extract the name from your user object
+              orderList[k].clientName = homeScreenController
+                      .userList[index].username ??
+                  ""; // Change '.name' to whatever your property is called (e.g., clientName)
+              // print("Found Client Name: ${orderList[k].clientName}");
+            }
           }
+          orderList.sort((a, b) => a.tradingsymbol.compareTo(b.tradingsymbol));
 
+          orderList.sort((a, b) {
+            // Pending first
+            if (a.status == "open" && b.status != "open") {
+              return -1;
+            }
+            if (a.status != "open" && b.status == "open") {
+              return 1;
+            }
+
+            // Cancelled last
+            if (a.status == "cancelled" && b.status != "cancelled") {
+              return 1;
+            }
+            if (a.status != "cancelled" && b.status == "cancelled") {
+              return -1;
+            }
+
+            // Then sort by symbol
+            return a.tradingsymbol.compareTo(b.tradingsymbol);
+          });
         }
+        update();
       }
+    } catch (e) {
+      print("Err=> ${e}");
+    } finally {
+      isOrderLoading.value = false;
     }
-    isDataLoading.value = false;
-    commandata =  orderList.map((e) => e.status).toSet().toList();
+  }
 
-    print("commandata=> ${commandata.length}");
-    /*for(int j =0;j<statusList.length;j++){
+  Future<void> getCancelOrdersApi({required int position}) async {
+    isOrderLoading.value = true;
+    commonOrderList.clear();
+    var symbolToken = orderList[position].symboltoken;
+    commonOrderList =
+        orderList.where((e) => e.symboltoken == symbolToken).toList();
+    try {
+      var response = await ApiImplementor.cancelOrdersApiImplementer(
+          userList: homeScreenController.commonClientJsonDataList,
+          cancelOrderList: commonOrderList.map((e) => e.toJson()).toList());
+      if (response.results.isNotEmpty) {
+        await getOrdersListApi();
+      }
+    } catch (e) {
+    } finally {
+      isOrderLoading.value = false;
+    }
+  }
 
-      for(int i=0;i<orderList.length;i++){
-
-        if(statusList[j] == orderList[i].status){
-          letestorderList.add(OrderListModel(status: orderList[i].status,producttype: orderList[i].producttype,ordertype: orderList[i].ordertype,variety: orderList[i].variety,
-          symboltoken: orderList[i].symboltoken,exchange: orderList[i].exchange,tradingsymbol: orderList[i].tradingsymbol,lotsize: orderList[i].lotsize,averageprice: orderList[i].averageprice,
-          cancelsize: orderList[i].cancelsize,disclosedquantity: orderList[i].disclosedquantity,updatetime: orderList[i].updatetime,duration: orderList[i].duration,
-          exchorderupdatetime: orderList[i].exchorderupdatetime,exchtime: orderList[i].exchtime,expirydate: orderList[i].expirydate,filledshares: orderList[i].filledshares,
-          fillid: orderList[i].fillid,filltime: orderList[i].filltime,instrumenttype: orderList[i].instrumenttype,optiontype: orderList[i].optiontype,orderid: orderList[i].orderid,
-          orderstatus: orderList[i].orderstatus,ordertag: orderList[i].ordertag,parentorderid: orderList[i].orderid,price: orderList[i].price,
-          quantity: orderList[i].quantity,text: orderList[i].text,squareoff: orderList[i].squareoff,stoploss: orderList[i].stoploss,strikeprice: orderList[i].strikeprice,
-          trailingstoploss: orderList[i].trailingstoploss,transactiontype: orderList[i].transactiontype,triggerprice: orderList[i].triggerprice,unfilledshares: orderList[i].unfilledshares,
-          uniqueorderid: orderList[i].uniqueorderid,unicID: 0,userModel: orderList[i].userModel));
-
+  Future<void> getPlaceOrdersApi(
+      {required List placeOderList, required bool isBasketOrder}) async {
+    isPlaceOrderLoading.value = true;
+    try {
+      var response = await ApiImplementor.getOrderPlaceApiImplementer(
+          userList: homeScreenController.commonClientJsonDataList,
+          orderList: placeOderList.map((e) => e.toJson()).toList());
+      if (response.results.isNotEmpty) {
+        if (!isBasketOrder) {
+          Get.back();
+        } else {
+          ctrl.controller.animateTo(3);
         }
       }
-    }*/
-    // orderList.sort((a, b) => b.price.toString().compareTo(a.price.toString()));
-    orderList.sort((a, b) => b.tradingsymbol.toString().compareTo(a.tradingsymbol.toString()));
+    } catch (e) {
+    } finally {
+      isPlaceOrderLoading.value = false;
+    }
+  }
 
-    update();
+  Future<void> getOrdersModifyApi({required List oderModifyList}) async {
+    isOrderModifyLoading.value = true;
+    try {
+      var response = await ApiImplementor.getModifyOrderPlaceApiImplementer(
+          userList: homeScreenController.commonClientJsonDataList,
+          orderList: oderModifyList.map((e) => e.toJson()).toList());
+      if (response.results.isNotEmpty) {
+        await getOrdersListApi();
+        Get.back();
+      }
+    } catch (e) {
+    } finally {
+      isOrderModifyLoading.value = false;
+    }
   }
 }

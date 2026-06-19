@@ -35,6 +35,7 @@ class BasketOrderListModel {
   String? producttype;
   String? privateKey;
   String? jwtToken;
+  String? clientCode;
 
   BasketOrderListModel(
       { this.tradingsymbol,
@@ -49,6 +50,7 @@ class BasketOrderListModel {
         this.producttype,
         this.jwtToken,
         this.privateKey,
+        this.clientCode,
       });
 
   BasketOrderListModel.fromJson(Map<String, dynamic> json) {

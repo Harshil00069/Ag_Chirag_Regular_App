@@ -1,3 +1,5 @@
+
+
 import 'package:treding/model/user_model.dart';
 
 class AllHoldingsModel {
@@ -16,7 +18,7 @@ class AllHoldingsModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
+    final Map<String, dynamic> data = new Map<String, dynamic>();
     data['status'] = this.status;
     data['message'] = this.message;
     data['errorcode'] = this.errorcode;
@@ -69,12 +71,12 @@ class Holdings {
   String? privateKey;
   var collateralquantity;
   var collateraltype;
-  double? haircut;
+  int? haircut;
   double? averageprice;
   double? ltp;
   String? symboltoken;
   double? close;
-  double? profitandloss;
+  int? profitandloss;
   double? pnlpercentage;
   UserModel? userModel;
   Holdings(

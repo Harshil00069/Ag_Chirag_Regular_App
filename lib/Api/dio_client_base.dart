@@ -1,7 +1,8 @@
 // ignore_for_file: avoid_print
 
-import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:treding/Api/api_logger_interceptor.dart';
+import 'api_urls.dart';
 
 
 class DioClient {
@@ -10,26 +11,28 @@ class DioClient {
   static Dio? getDioClient({int delay = 200000}) {
     if (dio == null) {
       dio = Dio();
-      dio!.options.baseUrl = "";
+      dio!.options.baseUrl = ApiUrls.domainName;
       dio!.options.connectTimeout = Duration(milliseconds: delay);
       dio!.options.receiveTimeout = Duration(milliseconds: delay);
+
+      dio!.interceptors.add(ApiLoggerInterceptor());
     }
     return dio;
   }
 
   static Future<dynamic> clientPost(String apiName,
-      {required Map<String, String> body, int delayTime = 200000}) async {
+      {required Map<String, String> body, int delayTime = 20000}) async {
     print("Client Post $apiName And Body $body");
     try {
       final response = await getDioClient(delay: delayTime)!
           .post(apiName,
-              queryParameters: body,
-              options: Options(headers: {'content-type': 'text/plain'}));
+          data: body,
+          options: Options(contentType: Headers.formUrlEncodedContentType));
 
       print(response.realUri);
       if (response.statusCode == 200) {
         print("in post api $apiName Body: $body And Response ${response.data}");
-        return response.data != null ? jsonDecode(response.data) : null;
+        return response;
       } else {
         print(response.statusMessage.toString());
 
@@ -47,12 +50,12 @@ class DioClient {
     try {
       final response = await getDioClient(delay: delayTime)!
           .get(apiName,
-              queryParameters: body,
-              options: Options(headers: {'content-type': 'text/plain'}));
+          queryParameters: body,
+          options: Options(headers: {'content-type': 'text/plain'}));
 
       print(response.realUri);
       if (response.statusCode == 200) {
-        return response.data != null ? jsonDecode(response.data) : null;
+        return response;
       } else {
         print(response.statusMessage.toString());
 

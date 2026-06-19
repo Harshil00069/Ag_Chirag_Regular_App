@@ -1,33 +1,25 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:dart_dash_otp/dart_dash_otp.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:intl/intl.dart';
 import 'package:treding/Controllers/homepage_controller.dart';
 import 'package:treding/Method/Methods.dart';
-import 'package:treding/Screens/user_holding_screen.dart';
 import 'package:treding/Screens/user_management_screen.dart';
+import 'package:treding/Utils/app_dialogs.dart';
 import 'package:treding/Utils/material_color_generator.dart';
-import 'package:treding/extra_clone_modules/screens/new_dash_board_screen.dart';
 import 'package:treding/model/user_model.dart';
-
-import '../Api/api_implementor.dart';
-import 'package:dio/dio.dart' as dio;
 
 import '../Controllers/dashboard_controller.dart';
 import '../Controllers/search_share_ctr.dart';
-import '../Controllers/watchlist_ctr.dart';
 import '../Database/pref_data.dart';
 import '../Utils/app_font.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -36,8 +28,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   HomepageCtr homepageCtr = Get.put(HomepageCtr());
   DashboardCtr ctrl = Get.put(DashboardCtr());
-
-  WatchListController watchListController = Get.put(WatchListController());
 
   SearchShareController searchShareController =
       Get.put(SearchShareController());
@@ -51,15 +41,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    print("working");
     checkdate();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(backgroundColor: Colors.white,
       appBar: AppBar(
           automaticallyImplyLeading: false,
           iconTheme: const IconThemeData(
@@ -90,16 +78,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   print("${value.snapshot.value}");
                   value.snapshot.children.forEach((element) async {
                     props = element.value as Map;
-
                     userListLocal.add(UserModel(
-                        isUserEnable: props['isUserEnable'],
+                        ipName: props['ipName'].toString(),
+                        ipPwd: props['ipPwd'].toString(),
+                        port: props['port'].toString(),
+                        publicIP: props['publicIP'].toString(),
                         clientcode: props['clientcode'].toString(),
                         secretKey: props['secretKey'].toString(),
                         privateKey: props['privateKey'].toString(),
                         password: props['password'].toString(),
                         username: props['username'].toString()));
-
-                    print("Lenght=> ${userListLocal.length}");
 
                     List<String> userListForSp = [];
                     for (var item in userListLocal) {
@@ -121,41 +109,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             IconButton(
               onPressed: () async {
-                //Login All Users
-                EasyLoading.show();
-                for (var item in homepageCtr.userList) {
-                  if (item.isUserEnable == true) {
-                    TOTP totp = TOTP(secret: item.secretKey ?? "", digits: 6);
-
-                    dio.Response? response =
-                        await ApiImplementor.getVersionInfoApiImplementer(
-                            PrivateKey: item.privateKey ?? "",
-                            clientcode: item.clientcode ?? "",
-                            password: item.password ?? "",
-                            totp: totp.now());
-
-                    if (response != null && response.statusCode == 200) {
-                      print("Data => new  ${response.data}");
-
-                      homepageCtr.addJwtToUserList(
-                          clientcode: item.clientcode ?? "",
-                          jwtTkn: response.data["data"]["jwtToken"]);
-                    } else {
-                      return;
-                    }
-                  }
-                }
-                await homepageCtr.getAllUserHoldingsData();
-                await homepageCtr.getPositionList().then((value) {
-                  homepageCtr.calculate();
-                });
-                EasyLoading.dismiss();
-                timer = Timer.periodic(const Duration(seconds: 30), (Timer t) {
-                  homepageCtr.getAllUserHoldingsData();
-                  homepageCtr.getPositionList().then((value) {
-                    homepageCtr.calculate();
-                  });
-                });
+                // //Login All Users
+                homepageCtr.initializeData();
               },
               icon: const Icon(Icons.power_settings_new),
             ),
@@ -163,30 +118,31 @@ class _HomeScreenState extends State<HomeScreen> {
       body: GetBuilder(
           init: homepageCtr,
           builder: (ctr) {
-            return ListView.builder(
+            return Stack(children: [
+                ListView.builder(
                 shrinkWrap: true,
                 physics: const AlwaysScrollableScrollPhysics(),
                 itemCount: homepageCtr.userList.length,
                 itemBuilder: (ctx, index) {
                   return Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(12.0),
                     child: InkWell(
                       onTap: () {
-                        Get.to(UserHoldingScreen(
-                          index: index,
-                          privatekey:
-                              homepageCtr.userList[index].privateKey.toString(),
-                        ));
+                        // Get.to(UserHoldingScreen(
+                        //   index: index,
+                        //   privatekey:
+                        //       homepageCtr.userList[index].privateKey.toString(),
+                        // ));
                       },
                       child: Container(
-                        padding: const EdgeInsets.all(5.0),
+                        padding: const EdgeInsets.all(8.0),
                         decoration: BoxDecoration(
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(8.0)),
+                          const BorderRadius.all(Radius.circular(8.0)),
                           color: Colors.white,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
+                              color: Colors.grey.withValues(alpha: 0.5),
                               //color of shadow
                               spreadRadius: 0.5,
                               blurRadius: 5,
@@ -213,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold)),
                                           Text(homepageCtr
-                                                  .userList[index].clientcode ??
+                                              .userList[index].clientcode ??
                                               "-")
                                         ],
                                       ),
@@ -225,27 +181,27 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   fontWeight: FontWeight.bold)),
                                           Text(
                                             homepageCtr
-                                                    .userList[index].username ??
+                                                .userList[index].username ??
                                                 "-",
                                             style:
-                                                const TextStyle(fontSize: 16),
+                                            const TextStyle(fontSize: 16),
                                           )
                                         ],
                                       ),
-                                      Row(
-                                        children: [
-                                          const Text("Holding PNL :",
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold)),
-                                          Text(
-                                            homepageCtr.userList[index].PNL ??
-                                                "-",
-                                            style:
-                                                const TextStyle(fontSize: 16),
-                                          )
-                                        ],
-                                      ),
+                                      // Row(
+                                      //   children: [
+                                      //     const Text("Holding PNL :",
+                                      //         style: TextStyle(
+                                      //             fontSize: 16,
+                                      //             fontWeight: FontWeight.bold)),
+                                      //     Text(
+                                      //       homepageCtr.userList[index].PNL ??
+                                      //           "-",
+                                      //       style:
+                                      //       const TextStyle(fontSize: 16),
+                                      //     )
+                                      //   ],
+                                      // ),
                                       Row(
                                         children: [
                                           const Text("Position PNL :",
@@ -254,14 +210,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   fontWeight: FontWeight.bold)),
                                           Text(
                                             homepageCtr.userList[index]
-                                                    .positionPNL ??
+                                                .positionPNL ??
                                                 "-",
                                             style: TextStyle(
                                                 fontSize: 16,
                                                 color: myChangeColor(
                                                     value: homepageCtr
-                                                            .userList[index]
-                                                            .positionPNL ??
+                                                        .userList[index]
+                                                        .positionPNL ??
                                                         "0.0")),
                                           )
                                         ],
@@ -274,10 +230,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   fontWeight: FontWeight.bold)),
                                           Text(
                                             homepageCtr.userList[index]
-                                                    .currentBalance ??
+                                                .currentBalance ??
                                                 "-",
                                             style:
-                                                const TextStyle(fontSize: 16),
+                                            const TextStyle(fontSize: 16),
                                           )
                                         ],
                                       ),
@@ -291,9 +247,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     width: 10,
                                     decoration: BoxDecoration(
                                         shape: BoxShape.circle,
-                                        color: homepageCtr
-                                                    .userList[index].jwtToken !=
-                                                null
+                                        color: homepageCtr.userList[index]
+                                            .jwtToken.isNotEmpty
                                             ? Colors.green
                                             : Colors.red),
                                   ),
@@ -305,7 +260,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   );
-                });
+                }),
+              Obx(() => homepageCtr.isLoginApiLoading.value
+                  ? Container(
+                color: Colors.grey.withValues(alpha: 0.3),
+                child: Center(
+                  child: AppDialogs.progressWidget(),
+                ),
+              )
+                  : const SizedBox(),
+              ),
+            ],);
           }),
     );
   }

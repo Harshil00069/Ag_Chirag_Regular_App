@@ -2,53 +2,66 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:treding/Database/pref_data.dart';
-import 'package:treding/model/all_position_model.dart';
+import 'package:treding/model/client_json_data.dart';
+import 'package:treding/model/position_data_model.dart';
 import 'package:treding/model/user_model.dart';
 
 import '../Api/api_implementor.dart';
-import 'package:dio/dio.dart' as dio;
-
-import '../model/all_holdings_model.dart';
 
 class HomepageCtr extends GetxController {
-  List<UserModel> userList = [
-    // UserModel(
-    //     clientcode: "K57124074",
-    //     password: "2297",
-    //     privateKey: "sEmu1HWp",
-    //     username: "Krupal",
-    //     secretKey: "NDSLNN7WBTZGNX75GS7WMBJIDE"),
-    // UserModel(
-      //     clientcode: "H54980091",
-      //     password: "2724",
-    //     privateKey: "9aYX9ZH2",
-    //     username: "Harshil",
-    //     secretKey: "44YEC4CXXCKAVX3AK3MBK3WMAQ")
-  ];
+  List<UserModel> userList = [];
+  List<ClientJsonDataModel> clientJsonDataList = [];
+  List<ClientJsonDataModel> commonClientJsonDataList = [];
+  RxBool isLoginApiLoading = false.obs;
 
-  List<Holdings> holdings =[];
-  List<Holdings> holdingScreenList =[];
-  List<Totalholding> totalholdingList =[];
-  Totalholding? totalholdings = Totalholding();
-  RxBool isholdingloading = false.obs;
-  List<Position> positionList = [];
-  List <String?> commandata =[];
+  RxList<PositionData> positionList = <PositionData>[].obs;
   RxBool isDataLoading = false.obs;
-  addUser(UserModel user) {
-    userList.add(user);
-  }
-
-  addJwtToUserList({required String clientcode, required String jwtTkn}) async {
-    int pos =
-        userList.indexWhere((element) => element.clientcode == clientcode);
-
-    userList[pos].jwtToken = jwtTkn;
-    await GetSingleUserData(pos);
-    update();
-  }
+  List<String?> commonData = [];
 
   @override
   void onInit() {
+    super.onInit();
+    fetchDataOnly();
+  }
+
+  Future<void> initializeData() async {
+    print("1 Start");
+    isLoginApiLoading.value = true;
+
+    await userLoginApi();
+    print("2 Login Done");
+
+    await getPositionList();
+    print("3 Position Done");
+
+    await calculate();
+    print("4 Calculate Done");
+
+    await userAccountDetailApi();
+    print("5 Account Done");
+
+    isLoginApiLoading.value = false;
+    print("6 Loader Off");
+  }
+
+  Future<void> refreshData() async {
+    print("1 Start");
+    isLoginApiLoading.value = true;
+
+    await getPositionList();
+    print("2 Position Done");
+
+    await calculate();
+    print("2 Calculate Done");
+
+    await userAccountDetailApi();
+    print("3 Account Done");
+
+    isLoginApiLoading.value = false;
+    print("6 Loader Off");
+  }
+
+  fetchDataOnly() {
     PrefData.getUserData().then((value) {
       for (var item in value) {
         addUser(item);
@@ -57,136 +70,29 @@ class HomepageCtr extends GetxController {
     });
   }
 
+  addUser(UserModel user) {
+    userList.add(user);
 
-  fetchDataOnly(){
-    PrefData.getUserData().then((value) {
-      for (var item in value) {
-        addUser(item);
-      }
-      update();
-    });
+    clientJsonDataList = userList.map((e) {
+      return ClientJsonDataModel(
+        ipName: e.ipName,
+        ipPwd: e.ipPwd,
+        port: e.port,
+        clientcode: e.clientcode,
+        password: e.password,
+        totpSecret: e.secretKey,
+        publicIP: e.publicIP,
+        apiKey: e.privateKey,
+      );
+    }).toList();
   }
 
-  freshData(){
-    userList.clear();
-    PrefData.getUserData().then((value) {
-      for (var item in value) {
-        addUser(item);
-      }
-      update();
-    });
-  }
-
-  Future<void> GetUserData() async {
-    for (int i = 0; i < userList.length; i++) {
-      if(userList[i].isUserEnable == true){
-        await ApiImplementor.getUserDetail(
-            PrivateKey: userList[i].privateKey ?? "",
-            authKey: userList[i].jwtToken ?? "")
-            .then((value) {
-          if (value != null && value.statusCode == 200) {
-            dio.Response response = value;
-            // print("Case :- ${response.data["data"]["availablecash"]}");
-            userList[i].currentBalance = response.data["data"]["availablecash"].toString();
-            // userList[i].PNL = response.data["data"]["net"];
-          }
-        });
-      }
-    }
-    update();
-  }
-
-  Future<void> getAllUserHoldingsData() async {
-    holdings.clear();
-    for (int i = 0; i < userList.length; i++) {
-
-      if(userList[i].isUserEnable == true){
-        await ApiImplementor.getAllHoldingsApi(
-            PrivateKey: userList[i].privateKey ?? "",
-            authKey: userList[i].jwtToken ?? "")
-            .then((value) {
-          print("check condition=> ${value != null && value.data!.holdings!.isNotEmpty && value.data!.totalholding != null }");
-          if (value != null && value.data!.holdings!.isNotEmpty && value.data!.totalholding != null ) {
-            userList[i].PNL = value.data!.totalholding!.totalprofitandloss.toString();
-          }
-        });
-      }
-    }
-    update();
-  }
-
-  Future<void> getUserHoldingsData({required int i}) async {
-    isholdingloading.value = true;
-    holdingScreenList.clear();
-    await ApiImplementor.getAllHoldingsApi(
-        PrivateKey: userList[i].privateKey ?? "",
-        authKey: userList[i].jwtToken ?? "")
-        .then((value) {
-      if (value != null && value.data!.holdings!.isNotEmpty && value.data!.totalholding != null ) {
-        holdingScreenList.addAll(value.data!.holdings ??[]);
-        totalholdings = value.data!.totalholding;
-        isholdingloading.value = false;
-      }else{
-        isholdingloading.value = false;
-      }
-    });
-    update();
-  }
-
-  Future<void> GetSingleUserData(int index) async {
-
-      await ApiImplementor.getUserDetail(
-          PrivateKey: userList[index].privateKey ?? "",
-          authKey: userList[index].jwtToken ?? "")
-          .then((value) {
-        if (value != null && value.statusCode == 200) {
-          dio.Response response = value;
-          print("Case :- ${response.data["data"]["availablecash"]}");
-          userList[index].currentBalance = response.data["data"]["availablecash"];
-          // userList[index].PNL = response.data["data"]["net"];
-        }
-      });
-
-      print("My index $index userlist length ${userList.length}");
-
-  }
-
-
-  deleteUser(UserModel userModel,int index) async {
-    ///Delete user from list and Sp also
-
-    List<UserModel> userListLocal = await PrefData.getUserData();
-
-    for (int i = 0; i < userList.length; i++) {
-      if (userListLocal[i].privateKey == userModel.privateKey && userListLocal[i].clientcode == userModel.clientcode && userListLocal[i].password == userModel.password) {
-        userListLocal.removeAt(i);
-        userList.removeAt(index);
-      }
-    }
-
-    List<String> userListForSp = [];
-
-    for (var item in userListLocal) {
-      userListForSp.add(json.encode(item.toJson()));
-    }
-
-    PrefData.setUserData(userListForSp);
-    update();
-  }
-
-
- Future<void> deleteAllUser() async {
+  Future<void> deleteAllUser() async {
     ///Delete user from list and Sp also
 
     List<UserModel> userListLocal = await PrefData.getUserData();
     userListLocal.clear();
-print("LL))) ${userListLocal.length}");
-
-    // for (int i = 0; i < userListLocal.length; i++) {
-    //   print("PP=> ${userListLocal[i].username}");
-    //
-    //   // userListLocal.removeAt(i);
-    // }
+    print("LL))) ${userListLocal.length}");
 
     List<String> userListForSp = [];
 
@@ -198,64 +104,129 @@ print("LL))) ${userListLocal.length}");
     PrefData.setUserData(userListForSp);
     update();
   }
-  Future<void> getPositionList() async {
-    positionList.clear();
-    isDataLoading.value = true;
-    for (var item in userList) {
-      if(item.isUserEnable == true){
-        dio.Response? response = await ApiImplementor.getPositionListApiImplementer(
-            PrivateKey: item.privateKey ?? "", token: item.jwtToken ?? "");
 
+  deleteUser(UserModel userModel, int index) async {
+    ///Delete user from list and Sp also
 
-        if (response!.data != null && response.statusCode == 200 && response.data['data'] != null&& response.data["status"]) {
+    List<UserModel> userListLocal = await PrefData.getUserData();
 
-          for (var orderItem in response.data['data']){
-            print(orderItem.toString());
-
-            Position orderListModel=Position.fromJson(orderItem);
-            orderListModel.userModel=item;
-            positionList.add(orderListModel );
-          }
-
-          isDataLoading.value = false;
-        }else{
-
-        }
+    for (int i = 0; i < userList.length; i++) {
+      if (userListLocal[i].privateKey == userModel.privateKey &&
+          userListLocal[i].clientcode == userModel.clientcode &&
+          userListLocal[i].password == userModel.password) {
+        userListLocal.removeAt(i);
+        userList.removeAt(index);
+        clientJsonDataList.removeAt(index);
       }
-
     }
-    commandata =  positionList.map((e) => e.userModel!.clientcode).toSet().toList();
-    isDataLoading.value = false;
-    print("positionList=> ${positionList.length}");
-    // print("positionList=> ${positionList[0].userModel}");
-    // orderList.sort((a, b) => b.price.toString().compareTo(a.price.toString()));
-    // orderList.sort((a, b) => b.tradingsymbol.toString().compareTo(a.tradingsymbol.toString()));
 
+    List<String> userListForSp = [];
+
+    for (var item in userListLocal) {
+      userListForSp.add(json.encode(item.toJson()));
+    }
+
+    PrefData.setUserData(userListForSp);
     update();
   }
 
-  String calculate() {
+  Future<void> userLoginApi() async {
+    isLoginApiLoading.value = true;
+    try {
+      var response = await ApiImplementor.userLoginApiImplementer(
+          userList: clientJsonDataList);
+      if (response.results.isNotEmpty) {
+        for (int i = 0; i < response.results.length; i++) {
+          if (response.results[i].jwt.isNotEmpty) {
+            userList[i].jwtToken = response.results[i].jwt;
+          }
+        }
+        commonClientJsonDataList =
+            userList.where((e) => e.jwtToken.isNotEmpty).map((e) {
+          return ClientJsonDataModel(
+              ipName: e.ipName,
+              ipPwd: e.ipPwd,
+              port: e.port,
+              clientcode: e.clientcode,
+              password: e.password,
+              totpSecret: e.secretKey,
+              publicIP: e.publicIP,
+              apiKey: e.privateKey,
+              jwtToken: e.jwtToken);
+        }).toList();
+
+        update();
+      }
+    } catch (e) {
+      print("${e}");
+    } finally {
+      // isLoginApiLoading.value = false;
+    }
+  }
+
+  Future<void> userAccountDetailApi() async {
+    isLoginApiLoading.value = true;
+    try {
+      var response = await ApiImplementor.userAccountDetailApiImplementer(
+          userList: commonClientJsonDataList);
+      if (response.results.isNotEmpty) {
+        for (int i = 0; i < response.results.length; i++) {
+          int pos = userList.indexWhere(
+              (element) => element.clientcode == response.results[i].client);
+          userList[pos].currentBalance =
+              response.results[i].data!.availablecash;
+        }
+        update();
+      }
+    } catch (e) {
+      print("${e}");
+    } finally {
+      // isLoginApiLoading.value = false;
+    }
+  }
+
+  Future<void> getPositionList() async {
+    positionList.clear();
+    isDataLoading.value = true;
+    try {
+      var response = await ApiImplementor.getPositionApiImplementer(
+          userList: commonClientJsonDataList);
+      if (response.results.isNotEmpty) {
+        for (int i = 0; i < response.results.length; i++) {
+          positionList.addAll(response.results[i].data);
+        }
+        commonData = positionList.map((e) => e.client).toSet().toList();
+        // update();
+      }
+    } catch (e) {
+      print("${e}");
+    } finally {
+      isDataLoading.value = false;
+    }
+  }
+
+  Future<void> calculate() async {
     String value = "";
-
-
-    for(int k=0;k<userList.length;k++){
-
-      for(int j =0;j<commandata.length;j++){
-        if(userList[k].clientcode ==  commandata[j]){
+    for (int k = 0; k < userList.length; k++) {
+      for (int j = 0; j < commonData.length; j++) {
+        if (userList[k].clientcode == commonData[j]) {
           double total = 0.0;
           for (int i = 0; i < positionList.length; i++) {
-            if(commandata[j] == positionList[i].userModel!.clientcode){
+            if (commonData[j] == positionList[i].client) {
               total += double.parse(positionList[i].pnl.toString());
               userList[k].positionPNL = total.toPrecision(2).toString();
-              // print("pnl=> ${positionList[i].pnl.toString()}");
+              print("pnl=> ${positionList[i].pnl.toString()}");
+
               // print("PositionPnl=> ${commandata[j]}");
-              // print("PositionPnl=> ${positionList[i].userModel!.username}==$i");
+              print("PositionPnl=> ${positionList[i].client}==$i");
             }
           }
-          value = total.toPrecision(3).toString();
+          update();
+          value = total.toPrecision(2).toString();
+          print("Vak=> ${value}");
         }
       }
     }
-    return value;
+    // return value;
   }
 }

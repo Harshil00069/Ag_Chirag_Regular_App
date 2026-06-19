@@ -1,45 +1,52 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/response/response.dart';
-import 'package:get/get_core/src/get_main.dart';
+import 'package:treding/Controllers/order_controller.dart';
 import 'package:treding/Utils/app_font.dart';
 import 'package:treding/Utils/material_color_generator.dart';
-import 'package:treding/extra_clone_modules/controllers/new_home_controller.dart';
+import 'package:treding/model/modify_order_model.dart';
 
-import '../Api/api_implementor.dart';
 import '../Controllers/dashboard_controller.dart';
 import '../Controllers/homepage_controller.dart';
-import '../Utils/helper.dart';
 import '../custom_widgets/app_burron.dart';
 import '../custom_widgets/app_text_field.dart';
 import '../model/user_model.dart';
-import 'package:dio/dio.dart' as dio;
-
-import 'my_order.dart';
 
 class OrderUpdateScreen extends StatefulWidget {
   final String tradingsymbol;
   final String exchange;
   final String ltp;
   final String lotSize;
-  final String  qty;
-  final String  userName;
-  final String  productType;
-  final int  variety;
-  final String  symboleToken;
-  final String  orderid;
+  final String qty;
+  final String userName;
+  final String productType;
+  final int variety;
+  final String symboleToken;
+  final String orderid;
   final bool isRatioOrder;
+  final String transactionType;
+  final String orderId;
 
-  const OrderUpdateScreen({super.key, required this.tradingsymbol, required this.exchange, required this.ltp, required this.lotSize, required this.qty, required this.variety, required this.userName, required this.productType, required this.symboleToken, required this.orderid, required this.isRatioOrder});
+  const OrderUpdateScreen(
+      {super.key,
+      required this.tradingsymbol,
+      required this.exchange,
+      required this.ltp,
+      required this.lotSize,
+      required this.qty,
+      required this.variety,
+      required this.userName,
+      required this.productType,
+      required this.symboleToken,
+      required this.orderid,
+      required this.isRatioOrder,
+      required this.transactionType,
+      required this.orderId});
 
   @override
   State<OrderUpdateScreen> createState() => _OrderUpdateScreenState();
 }
 
 class _OrderUpdateScreenState extends State<OrderUpdateScreen> {
-
   List<String> varityList = ["NORMAL", "STOPLOSS", "AMO"];
   List<String> ordertypeList = [
     "LIMIT",
@@ -66,68 +73,75 @@ class _OrderUpdateScreenState extends State<OrderUpdateScreen> {
   final HomepageCtr homepageCtr = Get.isRegistered<HomepageCtr>()
       ? Get.find<HomepageCtr>()
       : Get.put(HomepageCtr());
+  OrderController orderController = Get.put(OrderController());
 
-  final NewHomepageCtr homepageCtrNew = Get.isRegistered<NewHomepageCtr>()
-      ? Get.find<NewHomepageCtr>()
-      : Get.put(NewHomepageCtr());
+  // final NewHomepageCtr homepageCtrNew = Get.isRegistered<NewHomepageCtr>()
+  //     ? Get.find<NewHomepageCtr>()
+  //     : Get.put(NewHomepageCtr());
 
   List<GetUserListForOrder> userListWithQty = [];
   DashboardCtr ctrl = Get.put(DashboardCtr());
+  HomepageCtr homeScreenController = Get.put(HomepageCtr());
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
-    tradingSymbolCtr.text = widget.tradingsymbol ?? "-";
-    tradingExchangeCtr.text = widget.exchange ?? "-";
-    lotSizeCtr.text = widget.lotSize.toString() ?? "-";
+    tradingSymbolCtr.text = widget.tradingsymbol;
+    tradingExchangeCtr.text = widget.exchange;
 
-
-    priceCtr.text = widget.ltp.toString() ?? "-";
-    triggerPriceCtr.text = widget.ltp.toString() ?? "-";
+    priceCtr.text = widget.ltp.toString();
+    triggerPriceCtr.text = widget.ltp.toString();
     varietyNotifier.value = widget.variety;
 
-    if(widget.isRatioOrder){
-      for (var item in homepageCtrNew.newuserList) {
-        if(item.username == widget.userName){
-          userListWithQty.add(GetUserListForOrder(
-            userModel: item,
-            lotSize: widget.lotSize?? "0",
-            qty: widget.qty,
-          ));
-        }
+    int qty = int.parse(widget.qty);
+    int lot = int.parse(widget.lotSize);
+    int kk = (qty / lot).floor();
+    int tt = (kk * lot).floor();
 
-      }
-    }else{
-      for (var item in homepageCtr.userList) {
-        if(item.username == widget.userName){
-          userListWithQty.add(GetUserListForOrder(
-            userModel: item,
-            lotSize: widget.lotSize?? "0",
-            qty: widget.qty,
-          ));
-        }
-
+    for (var item in homeScreenController.userList) {
+      if (item.username == widget.userName) {
+        userListWithQty.add(GetUserListForOrder(
+          total: tt.toString(),
+          orderId: widget.orderId,
+          userModel: item,
+          lotSize: widget.lotSize,
+          qty: widget.qty,
+        ));
       }
     }
 
+    if (widget.transactionType == "BUY") {
+      buySellSwitch.value = true;
+    } else {
+      buySellSwitch.value = false;
+    }
   }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(
-      iconTheme: const IconThemeData(
-        color: Colors.white,
-      ),
-      backgroundColor: AppColor.primaryColor,
-      title: Text('Single Order Update', style: Font.bodyText1(),),
-    ),
+    return Scaffold(
+        appBar: AppBar(
+          iconTheme: const IconThemeData(
+            color: Colors.white,
+          ),
+          backgroundColor: AppColor.primaryColor,
+          title: Text(
+            'Single Order Update',
+            style: Font.bodyText1(),
+          ),
+        ),
         body: SingleChildScrollView(
           child: Column(
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Container(width: Get.width,
-                  decoration: BoxDecoration(border: Border.all(),borderRadius: const BorderRadius.all(Radius.circular(10))),
+                child: Container(
+                  width: Get.width,
+                  decoration: BoxDecoration(
+                      border: Border.all(),
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(10))),
                   child: Column(
                     children: [
                       const Text(
@@ -144,30 +158,31 @@ class _OrderUpdateScreenState extends State<OrderUpdateScreen> {
                               runSpacing: 6.0,
                               children: List.generate(
                                   varityList.length,
-                                      (index) => Container(
-                                    margin: const EdgeInsets.only(right: 10),
-                                    child: ChoiceChip(
-                                      padding: const EdgeInsets.all(0),
-                                      onSelected: (val) {
-                                        varietyNotifier.value = index;
-                                      },
-                                      label: Text(varityList[index]),
-                                      selectedColor:
-                                      varietyNotifier.value == index
-                                          ? Colors.blue
-                                          : Colors.transparent,
-                                      showCheckmark: false,
-                                      labelStyle: TextStyle(
-                                          color:
-                                          varietyNotifier.value == index
-                                              ? Colors.white
-                                              : Colors.black),
-                                      selected:
-                                      varietyNotifier.value == index
-                                          ? true
-                                          : false,
-                                    ),
-                                  )),
+                                  (index) => Container(
+                                        margin:
+                                            const EdgeInsets.only(right: 10),
+                                        child: ChoiceChip(
+                                          padding: const EdgeInsets.all(0),
+                                          onSelected: (val) {
+                                            varietyNotifier.value = index;
+                                          },
+                                          label: Text(varityList[index]),
+                                          selectedColor:
+                                              varietyNotifier.value == index
+                                                  ? Colors.blue
+                                                  : Colors.transparent,
+                                          showCheckmark: false,
+                                          labelStyle: TextStyle(
+                                              color:
+                                                  varietyNotifier.value == index
+                                                      ? Colors.white
+                                                      : Colors.black),
+                                          selected:
+                                              varietyNotifier.value == index
+                                                  ? true
+                                                  : false,
+                                        ),
+                                      )),
                             );
                           }),
                       const SizedBox(height: 8),
@@ -179,7 +194,10 @@ class _OrderUpdateScreenState extends State<OrderUpdateScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
                   width: Get.width,
-                  decoration: BoxDecoration(border: Border.all(),borderRadius: const BorderRadius.all(Radius.circular(10))),
+                  decoration: BoxDecoration(
+                      border: Border.all(),
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(10))),
                   child: Column(
                     children: [
                       const Text(
@@ -196,30 +214,31 @@ class _OrderUpdateScreenState extends State<OrderUpdateScreen> {
                               runSpacing: 6.0,
                               children: List.generate(
                                   ordertypeList.length,
-                                      (index) => Container(
-                                    margin: const EdgeInsets.only(right: 10),
-                                    child: ChoiceChip(
-                                      padding: const EdgeInsets.all(0),
-                                      onSelected: (val) {
-                                        ordertypeNotifier.value = index;
-                                      },
-                                      label: Text(ordertypeList[index]),
-                                      selectedColor:
-                                      ordertypeNotifier.value == index
-                                          ? Colors.blue
-                                          : Colors.transparent,
-                                      showCheckmark: false,
-                                      labelStyle: TextStyle(
-                                          color: ordertypeNotifier.value ==
-                                              index
-                                              ? Colors.white
-                                              : Colors.black),
-                                      selected:
-                                      ordertypeNotifier.value == index
-                                          ? true
-                                          : false,
-                                    ),
-                                  )),
+                                  (index) => Container(
+                                        margin:
+                                            const EdgeInsets.only(right: 10),
+                                        child: ChoiceChip(
+                                          padding: const EdgeInsets.all(0),
+                                          onSelected: (val) {
+                                            ordertypeNotifier.value = index;
+                                          },
+                                          label: Text(ordertypeList[index]),
+                                          selectedColor:
+                                              ordertypeNotifier.value == index
+                                                  ? Colors.blue
+                                                  : Colors.transparent,
+                                          showCheckmark: false,
+                                          labelStyle: TextStyle(
+                                              color: ordertypeNotifier.value ==
+                                                      index
+                                                  ? Colors.white
+                                                  : Colors.black),
+                                          selected:
+                                              ordertypeNotifier.value == index
+                                                  ? true
+                                                  : false,
+                                        ),
+                                      )),
                             );
                           })
                     ],
@@ -230,7 +249,10 @@ class _OrderUpdateScreenState extends State<OrderUpdateScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
                   width: Get.width,
-                  decoration: BoxDecoration(border: Border.all(),borderRadius: const BorderRadius.all(Radius.circular(10))),
+                  decoration: BoxDecoration(
+                      border: Border.all(),
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(10))),
                   child: Column(
                     children: [
                       const Text(
@@ -247,40 +269,37 @@ class _OrderUpdateScreenState extends State<OrderUpdateScreen> {
                               runSpacing: 6.0,
                               children: List.generate(
                                   productTypeList.length,
-                                      (index) => Container(
-                                    margin: const EdgeInsets.only(right: 5),
-                                    child: ChoiceChip(
-                                      padding: const EdgeInsets.all(0),
-                                      onSelected: (val) {
-                                        productTypeNotifier.value = index;
-                                      },
-                                      label: Text(productTypeList[index]),
-                                      selectedColor:
-                                      productTypeNotifier.value == index
-                                          ? Colors.blue
-                                          : Colors.transparent,
-                                      showCheckmark: false,
-                                      labelStyle: TextStyle(
-                                          color:
-                                          productTypeNotifier.value ==
-                                              index
-                                              ? Colors.white
-                                              : Colors.black),
-                                      selected:
-                                      productTypeNotifier.value == index
-                                          ? true
-                                          : false,
-                                    ),
-                                  )),
+                                  (index) => Container(
+                                        margin: const EdgeInsets.only(right: 5),
+                                        child: ChoiceChip(
+                                          padding: const EdgeInsets.all(0),
+                                          onSelected: (val) {
+                                            productTypeNotifier.value = index;
+                                          },
+                                          label: Text(productTypeList[index]),
+                                          selectedColor:
+                                              productTypeNotifier.value == index
+                                                  ? Colors.blue
+                                                  : Colors.transparent,
+                                          showCheckmark: false,
+                                          labelStyle: TextStyle(
+                                              color:
+                                                  productTypeNotifier.value ==
+                                                          index
+                                                      ? Colors.white
+                                                      : Colors.black),
+                                          selected:
+                                              productTypeNotifier.value == index
+                                                  ? true
+                                                  : false,
+                                        ),
+                                      )),
                             );
                           })
                     ],
                   ),
                 ),
               ),
-
-
-
               const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -289,52 +308,57 @@ class _OrderUpdateScreenState extends State<OrderUpdateScreen> {
                   children: [
                     const Text(
                       "Trading Symbol",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     RegTxtField(
                       isReadOnly: true,
                       ctr: tradingSymbolCtr,
                     ),
-
                     Row(
                       children: [
-
-                        Column(children: [
-                          const Text(
-                            "Exchanges",
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                          ),
-                          SizedBox(width: Get.width*0.25,
-                            child: RegTxtField(
-                              isReadOnly: true,
-                              ctr: tradingExchangeCtr,
-                            ),
-                          ),
-                        ],),
-
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20),
-                          child: Column(children: [
+                        Column(
+                          children: [
                             const Text(
-                              "Lot Size",
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                              "Exchanges",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 16),
                             ),
-                            SizedBox(width: Get.width*0.20,
+                            SizedBox(
+                              width: Get.width * 0.25,
                               child: RegTxtField(
                                 isReadOnly: true,
-                                ctr: lotSizeCtr,
+                                ctr: tradingExchangeCtr,
                               ),
                             ),
-                          ],),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Column(
+                            children: [
+                              const Text(
+                                "Lot Size",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                              SizedBox(
+                                width: Get.width * 0.20,
+                                child: RegTxtField(
+                                  isReadOnly: true,
+                                  ctr: lotSizeCtr,
+                                ),
+                              ),
+                            ],
+                          ),
                         )
-
-                      ],)
-
+                      ],
+                    )
                   ],
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 8.0,right: 8.0),
+                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -342,8 +366,13 @@ class _OrderUpdateScreenState extends State<OrderUpdateScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text("Price",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
-                          SizedBox(width: Get.width*0.30,
+                          const Text(
+                            "Price",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                          SizedBox(
+                            width: Get.width * 0.30,
                             child: RegTxtField(
                               isReadOnly: true,
                               ctr: priceCtr,
@@ -357,7 +386,11 @@ class _OrderUpdateScreenState extends State<OrderUpdateScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text("Enter Amount",  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
+                          const Text(
+                            "Enter Amount",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
                           RegTxtField(
                               ctr: triggerPriceCtr,
                               hintTxt: "Enter Amount",
@@ -414,15 +447,11 @@ class _OrderUpdateScreenState extends State<OrderUpdateScreen> {
                 children: List.generate(
                     userListWithQty.length, (index) => userListWithQty[index]),
               ),
-
               ValueListenableBuilder(
                   valueListenable: buySellSwitch,
                   builder: (ctx, val, _) {
                     return AppButton(
                         onPress: () async {
-                          print(
-                              "/-*/-*/-*/-*/-*/-*/-*  ORDER Update Start  -*-*/-*/*-/-*/-*/-*/-*\n\n");
-
                           String price = "";
                           if (triggerPriceCtr.value.text.isNotEmpty) {
                             price = triggerPriceCtr.value.text;
@@ -431,69 +460,30 @@ class _OrderUpdateScreenState extends State<OrderUpdateScreen> {
                           }
 
                           for (int i = 0; i < userListWithQty.length; i++) {
-                            if (int.parse(userListWithQty[i].qtyCtr.value.text) >
-                                0) {
-                              var data = {
-                                "variety": varityList[varietyNotifier.value],
-                                "orderid": widget.orderid,
-                                "ordertype": ordertypeList[ordertypeNotifier.value],
-                                "producttype": productTypeList[productTypeNotifier.value],
-                                "duration": "DAY",
-                                "price": price,
-                                "quantity": userListWithQty[i].qtyCtr.text,
-                                "tradingsymbol": widget.tradingsymbol,
-                                "symboltoken": widget.symboleToken,
-                                "exchange": widget.exchange,
-
-                              };
-                              print("name :- ${userListWithQty[i].userModel.toJson()} => \n""$data");
-
-                              try {
-                                EasyLoading.show();
-                                dio.Response? responce =
-                                await ApiImplementor.singleOrderUpdateApiImplementer(
-                                    PrivateKey:
-                                    '${userListWithQty[i].userModel.privateKey}',
-                                    data: data,
-                                    token: '${userListWithQty[i].userModel.jwtToken}');
-                                EasyLoading.dismiss();
-
-                                if (responce != null &&
-                                    responce.data != null &&
-                                    responce.statusCode == 200) {
-                                  print(responce.data);
-                                  Helper().showMessage(
-                                      message:
-                                      "Order Update for ${userListWithQty[i].userModel.username}");
-
-                                }else{
-                                  Helper().showMessage(
-                                      message: "${ responce!.data["message"]}");
-                                }
-
-                              } catch (e) {
-                                Helper().showMessage(
-                                    message:
-                                    "$e");
-                                print("${e}");
-                              }
-                            }
+                            orderController.orderModifyList.add(
+                                ModifyOrderModel(
+                                    orderid: userListWithQty[i].orderId,
+                                    clientcode: userListWithQty[i]
+                                        .userModel
+                                        .clientcode
+                                        .toString(),
+                                    variety: varityList[varietyNotifier.value],
+                                    tradingsymbol: widget.tradingsymbol,
+                                    symboltoken: widget.symboleToken,
+                                    exchange: widget.exchange,
+                                    producttype:
+                                        productTypeList[
+                                            productTypeNotifier.value],
+                                    newPrice: price,
+                                    quantity:
+                                        userListWithQty[i].totalCtr.text));
                           }
-                          Navigator.of(context).pop(true);
-                          // Get.back();
-                          ctrl.controller.animateTo(3);
 
-                          print("/-*/-*/-*/-*/-*/-*/-*/  ORDER Update END */-*-*/-*/*-/-*/-*/-*/-*");
+                          orderController.getOrdersModifyApi(
+                              oderModifyList: orderController.orderModifyList);
                         },
                         text: buySellSwitch.value ? "BUY" : "SELL");
                   }),
-
-              // ListView.builder(
-              //
-              //     itemCount: userListWithQty.length,
-              //     itemBuilder: (ctx, index) {
-              //       return userListWithQty[index];
-              //     })
             ],
           ),
         ));
@@ -503,17 +493,27 @@ class _OrderUpdateScreenState extends State<OrderUpdateScreen> {
 class GetUserListForOrder extends StatelessWidget {
   UserModel userModel;
   TextEditingController qtyCtr = TextEditingController(text: "0");
-  // TextEditingController lotSizeCtr = TextEditingController(text: "0");
+  TextEditingController lotSizeCtr = TextEditingController(text: "0");
   TextEditingController totalCtr = TextEditingController(text: "0");
   String lotSize;
   String qty;
+  String orderId;
+  String total;
 
-  GetUserListForOrder({required this.userModel, required this.lotSize,required this.qty});
+  GetUserListForOrder({
+    required this.userModel,
+    required this.lotSize,
+    required this.qty,
+    required this.orderId,
+    required this.total,
+  });
 
   @override
   Widget build(BuildContext context) {
-    // lotSizeCtr.text = lotSize;
+    lotSizeCtr.text = lotSize;
     qtyCtr.text = qty;
+    totalCtr.text = total;
+
     print("My Lot size :- ${lotSize}");
 
     return Column(
@@ -523,19 +523,10 @@ class GetUserListForOrder extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(child: Center(child: Text("${userModel.username}"))),
-            // Expanded(
-            //     child: Center(child: Text("${userModel.currentBalance ?? 0}"))),
-            // Expanded(
-            //   child: Center(
-            //     child: RegTxtField(
-            //       isReadOnly: true,
-            //       ctr: lotSizeCtr,
-            //     ),
-            //   ),
-            // ),
             Padding(
               padding: const EdgeInsets.only(right: 10),
-              child: SizedBox(width: Get.width*0.30,
+              child: SizedBox(
+                width: Get.width * 0.30,
                 child: Center(
                   child: RegTxtField(
                     ctr: qtyCtr,
@@ -556,7 +547,8 @@ class GetUserListForOrder extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.only(right: 10),
-              child: SizedBox(width: Get.width*0.30,
+              child: SizedBox(
+                width: Get.width * 0.30,
                 child: Center(
                   child: RegTxtField(isReadOnly: true, ctr: totalCtr),
                 ),

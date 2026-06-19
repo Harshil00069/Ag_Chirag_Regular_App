@@ -5,9 +5,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:treding/authentication/login_screen.dart';
 
-import 'Screens/First_Screen.dart';
-import 'Screens/dash_board.dart';
-
 
 void main() async{
 
@@ -34,7 +31,6 @@ class MyApp extends StatelessWidget {
       ),
       builder: EasyLoading.init(),
       home:
-      //FirstScreen()
       const LoginScreen(),
     );
   }

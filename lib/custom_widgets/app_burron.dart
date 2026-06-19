@@ -5,9 +5,10 @@ class AppButton extends StatelessWidget {
   bool customView;
   Widget? widget;
   String text;
+  bool isLoading;
 
   AppButton(
-      {this.onPress, this.customView = false, this.widget, this.text = ""});
+      {this.onPress, this.customView = false, this.widget, this.text = "",this.isLoading =false});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +17,8 @@ class AppButton extends StatelessWidget {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
       onPressed: onPress,
-      child: customView ? widget : Text(text),
+      child: customView ? widget : isLoading? SizedBox(height: 20,width: 20,
+          child: CircularProgressIndicator()): Text(text),
     );
   }
 }

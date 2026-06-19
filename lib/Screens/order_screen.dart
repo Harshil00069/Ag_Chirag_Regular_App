@@ -66,7 +66,7 @@ class _OrderScreenState extends State<OrderScreen> {
     tradingSymbolCtr.text = widget.watchListModel.tradingsymbol ?? "-";
     tradingExchangeCtr.text = widget.watchListModel.exchange ?? "-";
 
-    priceCtr.text = widget.watchListModel.ltp.toString() ?? "-";
+    priceCtr.text = widget.watchListModel.ltp.toString();
     lotSizeCtr.text = widget.watchListModel.lotsize.toString() ?? "-";
 
     for (var item in homepageCtr.userList) {

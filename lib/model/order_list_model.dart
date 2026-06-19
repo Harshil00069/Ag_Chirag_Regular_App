@@ -1,3 +1,5 @@
+
+
 import 'package:treding/model/user_model.dart';
 
 class OrderListModel {
@@ -37,7 +39,6 @@ class OrderListModel {
   String? filltime;
   String? parentorderid;
   String? uniqueorderid;
-  String? timeOnly;
   UserModel? userModel;
   int unicID =0;
 
@@ -79,7 +80,6 @@ class OrderListModel {
         this.parentorderid,
         this.uniqueorderid,
         this.userModel,
-        this.timeOnly,
         required this.unicID,
       });
 
@@ -120,7 +120,6 @@ class OrderListModel {
     filltime = json['filltime'];
     parentorderid = json['parentorderid'];
     userModel = json['UserModel'];
-    timeOnly = json['timeOnly'];
     unicID = 0;
   }
 

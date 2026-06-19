@@ -564,7 +564,7 @@ class _NewBasketOrderScreenState extends State<NewBasketOrderScreen> {
                   value: basketOrderController.selectedTredingSymbolePosition.value,
                   onChanged: (value) {
                     basketOrderController.onChange(value as int);
-                    GetSharePrice(i: value);
+                    // GetSharePrice(i: value);
                     TriggerPriceCtr.clear();
                     tradingSymbolCtr.text  =    watchListController.basketWatchlist[basketOrderController.selectedTredingSymbolePosition.value].tradingsymbol.toString();
                     priceCtr.text  =    watchListController.basketWatchlist[basketOrderController.selectedTredingSymbolePosition.value].ltp.toString();
@@ -582,21 +582,21 @@ class _NewBasketOrderScreenState extends State<NewBasketOrderScreen> {
       ],
     );
   }
-  GetSharePrice({required int i}) async {
-    print("=> ${i}");
-    print("I am Call");
-    num mySharePrice =
-    await searchShareController.getSharePrice(
-        tradingsymbol: watchListController.basketWatchlist[i].tradingsymbol ?? "",
-        symboltoken: watchListController.basketWatchlist[i].symboltoken ?? "",
-        exchange: watchListController.basketWatchlist[i].exchange ?? "");
+  // GetSharePrice({required int i}) async {
+  //   print("=> ${i}");
+  //   print("I am Call");
+  //   num mySharePrice =
+  //   await searchShareController.getSharePrice(
+  //       tradingsymbol: watchListController.basketWatchlist[i].tradingsymbol ?? "",
+  //       symboltoken: watchListController.basketWatchlist[i].symboltoken ?? "",
+  //       exchange: watchListController.basketWatchlist[i].exchange ?? "");
+  //
+  //   refreshSharePrice(i,mySharePrice);
+  // }
 
-    refreshSharePrice(i,mySharePrice);
-  }
-
-  refreshSharePrice(int pos, num newPrice) {
-    watchListController.basketWatchlist[pos].ltp = newPrice;
-  }
+  // refreshSharePrice(int pos, num newPrice) {
+  //   watchListController.basketWatchlist[pos].ltp = newPrice;
+  // }
 }
 class GetUserListForOrder extends StatelessWidget {
   UserModel userModel;
