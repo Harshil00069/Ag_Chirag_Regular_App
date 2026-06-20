@@ -42,36 +42,44 @@ class RegTxtField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(height: 40,
-      child: TextFormField(style: const TextStyle(fontSize: 14),
+    return SizedBox(
+      height: 40,
+      child: TextFormField(
+        style: const TextStyle(fontSize: 14),
         controller: ctr,
         readOnly: isReadOnly,
         inputFormatters: inputFormatters,
         validator: validator,
         keyboardType: keyboardType,
-        // autofocus: true,
         obscureText: showPwdIcon && !passwordVisible,
-        // textAlign: TextAlign.center,
         decoration: InputDecoration(
           fillColor: ColorConst.txtBgColor,
           filled: true,
-          suffixIcon: showPwdIcon ? IconButton(
-            focusColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            color: Colors.transparent,
-            disabledColor: Colors.transparent,
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 10,
+            vertical: 10,
+          ),
+          suffixIcon: showPwdIcon
+              ? IconButton(
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(
+              minWidth: 35,
+              minHeight: 35,
+            ),
             icon: Icon(
-              // Based on passwordVisible state choose the icon
               passwordVisible
                   ? Icons.visibility
                   : Icons.visibility_off,
               color: ColorConst.headerColor,
             ),
             onPressed: onTapIcon,
-          ) : SizedBox.shrink(),
-          contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          )
+              : null,
+          suffixIconConstraints: const BoxConstraints(
+            minWidth: 35,
+            minHeight: 35,
+          ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(radius),
             borderSide: BorderSide(
@@ -84,7 +92,7 @@ class RegTxtField extends StatelessWidget {
               color: ColorConst.txtBgColor,
             ),
           ),
-          enabledBorder:  OutlineInputBorder(
+          enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(radius),
             borderSide: BorderSide(
               color: ColorConst.txtBgColor,
@@ -93,22 +101,16 @@ class RegTxtField extends StatelessWidget {
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(radius),
             borderSide: BorderSide(
-              color: ColorConst.txtBgColor, // Set your desired header color here
+              color: ColorConst.txtBgColor,
             ),
           ),
           labelText: labelText,
           labelStyle: TextStyle(
-              color: ColorConst.headerColor,
+            color: ColorConst.headerColor,
           ),
-          focusColor: ColorConst.headerColor,
           hintText: hintTxt,
-          // hintStyle: TextStyle(
-          //     color: Colors.red
-          // ),
           prefixIcon: prefix,
-          // prefixIconConstraints: BoxConstraints(maxWidth: 30, maxHeight: 30),
-            floatingLabelBehavior: FloatingLabelBehavior.always,
-          // alignLabelWithHint: true,
+          floatingLabelBehavior: FloatingLabelBehavior.always,
         ),
         onChanged: onChanged,
         maxLength: maxLength,

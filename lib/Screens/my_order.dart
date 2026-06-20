@@ -27,7 +27,7 @@ class _MyOrderState extends State<MyOrder> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         iconTheme: const IconThemeData(
@@ -218,8 +218,7 @@ class _MyOrderState extends State<MyOrder> {
                                           userName: orderController
                                               .orderList[index].clientName
                                               .toString(),
-                                          variety:
-                                              selectedVariety(index: index),
+                                          variety: selectedVariety(index: index),
                                           lotSize: orderController
                                               .orderList[index].lotsize
                                               .toString(),

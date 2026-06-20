@@ -31,7 +31,6 @@ class AddUserScreen extends StatefulWidget {
 }
 
 class _AddUserScreenState extends State<AddUserScreen> {
-  // final DatabaseService _databaseService = DatabaseService();
 
   TextEditingController privateKeyCtr = TextEditingController();
 
@@ -74,13 +73,9 @@ class _AddUserScreenState extends State<AddUserScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // PrefData.getUserData().then((value) {
-    //   for (var item in value) {
-    //     print("My dat :-${item.username}");
-    //   }
-    // });
 
-    return Scaffold(appBar: AppBar(backgroundColor:  AppColor.primaryColor,iconTheme: const IconThemeData(
+    return Scaffold(backgroundColor: Colors.white,
+      appBar: AppBar(backgroundColor:  AppColor.primaryColor,iconTheme: const IconThemeData(
       color: Colors.white, //change your color here
     ),
         title:  Text(widget.forEdit ? "Edit user" : "Add User",
@@ -211,30 +206,6 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     ],
                   )),
               const SizedBox(height: 10),
-          
-              // Container(
-              //     margin: EdgeInsets.symmetric(horizontal: Get.size.width * 0.10),
-              //     child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-              //       children: [
-              //         TextFrfHeading("User Enable"),
-              //         const SizedBox(height: 5),
-              //         Padding(
-              //           padding: const EdgeInsets.only(left: 10),
-              //           child: ValueListenableBuilder(
-              //               valueListenable: buySellSwitch,
-              //               builder: (ctx, val, _) {
-              //                 return Switch(inactiveTrackColor: Colors.red.shade100,
-              //                   value: buySellSwitch.value,
-              //                   onChanged: (val) {
-              //                     buySellSwitch.value = val;
-              //                   },
-              //                   activeThumbColor: Colors.green,
-              //                   inactiveThumbColor: Colors.red,
-              //                 );
-              //               }),
-              //         ),
-              //       ],
-              //     )),
               const SizedBox(height: 10),
               AppButton(
                 text: widget.forEdit ? "Edit User" : "Add User",
@@ -348,6 +319,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
                   }
                 },
               ),
+              SizedBox(height: 30,)
             ],
           ),
         ),

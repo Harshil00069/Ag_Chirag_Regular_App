@@ -57,9 +57,13 @@ class _SearchShareState extends State<SearchShare> {
               Card(color: Colors.white,
                 child: DropdownSearch<ExchangeListData>(
                     popupProps: const PopupProps.menu(),
-                    items: searchShareController.exchangeList,
-                    dropdownDecoratorProps: const DropDownDecoratorProps(
-                      dropdownSearchDecoration: InputDecoration(
+                    items:
+                        (filter, infiniteScrollProps) =>
+                        searchShareController.exchangeList,
+                    compareFn: (a, b) => true,
+                    // items: searchShareController.exchangeList,
+                    decoratorProps: const DropDownDecoratorProps(
+                      decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(
                           horizontal: 16,
                           vertical: 12,
@@ -73,7 +77,7 @@ class _SearchShareState extends State<SearchShare> {
                     itemAsString: (sharelistdata) {
                       return sharelistdata.exchangeName;
                     },
-                    onChanged: (val) async {
+                    onSelected: (val) async {
                       if (val!.shortName != "") {
                         await searchShareController.getSearchScriptApi(
                             type: val.shortName);
@@ -96,9 +100,13 @@ class _SearchShareState extends State<SearchShare> {
                   : Card(color: Colors.white,
                     child: DropdownSearch<SearchData>(
                     popupProps: const PopupProps.menu(showSearchBox: true),
-                    items: searchShareController.newShareList,
-                    dropdownDecoratorProps: const DropDownDecoratorProps(
-                        dropdownSearchDecoration:
+                    // items: searchShareController.newShareList,
+                        items:
+                            (filter, infiniteScrollProps) =>
+                            searchShareController.newShareList,
+                        compareFn: (a, b) => true,
+                        decoratorProps: const DropDownDecoratorProps(
+                            decoration:
                         InputDecoration(hintText: "Search",
                           contentPadding: EdgeInsets.symmetric(
                             horizontal: 16,
@@ -110,7 +118,7 @@ class _SearchShareState extends State<SearchShare> {
                     itemAsString: (shareModel) {
                       return shareModel.symbol!;
                     },
-                    onChanged: (val) async {
+                    onSelected: (val) async {
                       if (val != null) {
                         searchShareController.selectedShare = val;
                         searchShareController.SelectedShareLotSizes.value =

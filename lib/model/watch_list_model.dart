@@ -2,7 +2,7 @@ class WatchListModel {
   String? exchange;
   String? tradingsymbol;
   String? symboltoken;
-  double? ltp;
+  double ltp =0.0;
   String? lotsize;
   int position = 0;
 
@@ -11,7 +11,7 @@ class WatchListModel {
     this.tradingsymbol,
     this.symboltoken,
     this.position = 0,
-    this.ltp,
+    this.ltp=0.0,
     this.lotsize,
   });
 
@@ -19,9 +19,8 @@ class WatchListModel {
     exchange = json['exchange'];
     tradingsymbol = json['tradingsymbol'];
     symboltoken = json['symboltoken'];
-
     // Safely handles both integers and doubles from the API response
-    ltp =json["ltp"] != null ? (json["ltp"] as num).toDouble() : 0.0;
+    ltp =(json['ltp'] as num?)?.toDouble() ?? 0.0;
 
     lotsize = json['lotsize'];
   }
@@ -31,7 +30,7 @@ class WatchListModel {
     data['exchange'] = this.exchange;
     data['tradingsymbol'] = this.tradingsymbol;
     data['symboltoken'] = this.symboltoken;
-    data['ltp'] = this.ltp;
+    data['ltp'] = this.ltp ?? 0.0;
     data['lotsize'] = this.lotsize;
     return data;
   }

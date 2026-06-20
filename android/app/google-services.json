@@ -1,14 +1,14 @@
 {
   "project_info": {
-    "project_number": "619791092502",
-    "firebase_url": "https://treding-only-94d81-default-rtdb.firebaseio.com",
-    "project_id": "treding-only-94d81",
-    "storage_bucket": "treding-only-94d81.appspot.com"
+    "project_number": "675696486773",
+    "firebase_url": "https://angleonechiragproject-default-rtdb.firebaseio.com",
+    "project_id": "angleonechiragproject",
+    "storage_bucket": "angleonechiragproject.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:619791092502:android:6de734bf48a0207dd45e37",
+        "mobilesdk_app_id": "1:675696486773:android:09b0ec6033c6a215c10b3c",
         "android_client_info": {
           "package_name": "com.example.treding"
         }
@@ -16,7 +16,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyATpMNJ1_XYK9v9TrMrpets6hBNUXouCss"
+          "current_key": "AIzaSyC0DEyhKBarVMYnd0RyCyX3jeX5RGFZQg8"
         }
       ],
       "services": {

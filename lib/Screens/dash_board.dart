@@ -36,27 +36,56 @@ class _DashBoardScreenState extends State<DashBoardScreen>
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 7,
-      child: Scaffold(
-        bottomNavigationBar: TabBar(
-          tabAlignment: TabAlignment.start,
-          unselectedLabelColor: Colors.black,
-          indicatorSize: TabBarIndicatorSize.label,
-          controller: ctrl.controller,
-          automaticIndicatorColorAdjustment: false,
-          isScrollable: true,
-          overlayColor:
-              const WidgetStatePropertyAll<Color>(Colors.transparent),
-          tabs: const [
-            Tab(
-              text: "Home",
-              icon: Icon(Icons.home),
+      child: Scaffold(backgroundColor: Colors.white,
+        bottomNavigationBar: Container(
+          height: 75,
+          // margin: const EdgeInsets.symmetric(
+          //   horizontal: 12,
+          //   vertical: 8,
+          // ),
+          // decoration: BoxDecoration(
+          //   color: Colors.white,
+          //   borderRadius: BorderRadius.circular(16),
+          //   boxShadow: [
+          //     BoxShadow(
+          //       color: Colors.black.withOpacity(0.08),
+          //       blurRadius: 12,
+          //       spreadRadius: 1,
+          //       offset: const Offset(0, 4),
+          //     ),
+          //   ],
+          // ),
+          decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 10,
+              offset: Offset(0, -2),
             ),
-            Tab(text: "Search Share", icon: Icon(Icons.search)),
-            Tab(text: "Watch List", icon: Icon(Icons.list_alt_outlined)),
-            Tab(text: "Orders", icon: Icon(Icons.bookmark_border)),
-            Tab(text: "Basket Order", icon: Icon(Icons.shopping_basket)),
-            Tab(text: "Position", icon: Icon(Icons.polymer_sharp)),
           ],
+        ),
+          child: TabBar(
+            tabAlignment: TabAlignment.start,
+            unselectedLabelColor: Colors.black,
+            indicatorSize: TabBarIndicatorSize.label,
+            controller: ctrl.controller,
+            automaticIndicatorColorAdjustment: false,
+            isScrollable: true,
+            overlayColor:
+                const WidgetStatePropertyAll<Color>(Colors.transparent),
+            tabs: const [
+              Tab(
+                text: "Home",
+                icon: Icon(Icons.home),
+              ),
+              Tab(text: "Search Share", icon: Icon(Icons.search)),
+              Tab(text: "Watch List", icon: Icon(Icons.list_alt_outlined)),
+              Tab(text: "Orders", icon: Icon(Icons.bookmark_border)),
+              Tab(text: "Basket Order", icon: Icon(Icons.shopping_basket)),
+              Tab(text: "Position", icon: Icon(Icons.polymer_sharp)),
+            ],
+          ),
         ),
         body: TabBarView(
           controller: ctrl.controller,

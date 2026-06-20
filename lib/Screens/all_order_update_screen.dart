@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:treding/Controllers/homepage_controller.dart';
 import 'package:treding/Controllers/order_controller.dart';
+import 'package:treding/Utils/app_dialogs.dart';
 import 'package:treding/Utils/app_font.dart';
 import 'package:treding/model/modify_order_model.dart';
 import 'package:treding/model/user_model.dart';
@@ -78,6 +79,7 @@ class _AllOrderUpdateScreenState extends State<AllOrderUpdateScreen> {
 
     tradingSymbolCtr.text = widget.tradingsymbol;
     tradingExchangeCtr.text = widget.exchange;
+    lotSizeCtr.text = widget.lotSize;
 
     priceCtr.text = widget.ltp.toString();
     triggerPriceCtr.text = widget.ltp.toString();
@@ -115,7 +117,7 @@ class _AllOrderUpdateScreenState extends State<AllOrderUpdateScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(backgroundColor: Colors.white,
         appBar: AppBar(
           title: Text(
             "Bulk Order Update",
@@ -126,36 +128,39 @@ class _AllOrderUpdateScreenState extends State<AllOrderUpdateScreen> {
           ),
           backgroundColor: AppColor.primaryColor,
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  width: Get.width,
-                  decoration: BoxDecoration(
-                      border: Border.all(),
-                      borderRadius:
+        body: Stack(children: [
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      width: Get.width,
+                      decoration: BoxDecoration(
+                          border: Border.all(),
+                          borderRadius:
                           const BorderRadius.all(Radius.circular(10))),
-                  child: Column(
-                    children: [
-                      const Text(
-                        "Select Variety",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                      const SizedBox(height: 10),
-                      ValueListenableBuilder(
-                          valueListenable: varietyNotifier,
-                          builder: (ctx, val, _) {
-                            return Wrap(
-                              spacing: 6.0,
-                              runSpacing: 6.0,
-                              children: List.generate(
-                                  varityList.length,
-                                  (index) => Container(
+                      child: Column(
+                        children: [
+                          const Text(
+                            "Select Variety",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                          const SizedBox(height: 10),
+                          ValueListenableBuilder(
+                              valueListenable: varietyNotifier,
+                              builder: (ctx, val, _) {
+                                return Wrap(
+                                  spacing: 6.0,
+                                  runSpacing: 6.0,
+                                  children: List.generate(
+                                      varityList.length,
+                                          (index) => Container(
                                         margin:
-                                            const EdgeInsets.only(right: 10),
+                                        const EdgeInsets.only(right: 10),
                                         child: ChoiceChip(
                                           padding: const EdgeInsets.all(0),
                                           onSelected: (val) {
@@ -163,55 +168,55 @@ class _AllOrderUpdateScreenState extends State<AllOrderUpdateScreen> {
                                           },
                                           label: Text(varityList[index]),
                                           selectedColor:
-                                              varietyNotifier.value == index
-                                                  ? Colors.blue
-                                                  : Colors.transparent,
+                                          varietyNotifier.value == index
+                                              ? Colors.blue
+                                              : Colors.transparent,
                                           showCheckmark: false,
                                           labelStyle: TextStyle(
                                               color:
-                                                  varietyNotifier.value == index
-                                                      ? Colors.white
-                                                      : Colors.black),
-                                          selected:
                                               varietyNotifier.value == index
-                                                  ? true
-                                                  : false,
+                                                  ? Colors.white
+                                                  : Colors.black),
+                                          selected:
+                                          varietyNotifier.value == index
+                                              ? true
+                                              : false,
                                         ),
                                       )),
-                            );
-                          }),
-                      const SizedBox(height: 8),
-                    ],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  width: Get.width,
-                  decoration: BoxDecoration(
-                      border: Border.all(),
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(10))),
-                  child: Column(
-                    children: [
-                      const Text(
-                        "Select Order Type",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
+                                );
+                              }),
+                          const SizedBox(height: 8),
+                        ],
                       ),
-                      const SizedBox(height: 10),
-                      ValueListenableBuilder(
-                          valueListenable: ordertypeNotifier,
-                          builder: (ctx, val, _) {
-                            return Wrap(
-                              spacing: 6.0,
-                              runSpacing: 6.0,
-                              children: List.generate(
-                                  ordertypeList.length,
-                                  (index) => Container(
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      width: Get.width,
+                      decoration: BoxDecoration(
+                          border: Border.all(),
+                          borderRadius:
+                          const BorderRadius.all(Radius.circular(10))),
+                      child: Column(
+                        children: [
+                          const Text(
+                            "Select Order Type",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                          const SizedBox(height: 10),
+                          ValueListenableBuilder(
+                              valueListenable: ordertypeNotifier,
+                              builder: (ctx, val, _) {
+                                return Wrap(
+                                  spacing: 6.0,
+                                  runSpacing: 6.0,
+                                  children: List.generate(
+                                      ordertypeList.length,
+                                          (index) => Container(
                                         margin:
-                                            const EdgeInsets.only(right: 10),
+                                        const EdgeInsets.only(right: 10),
                                         child: ChoiceChip(
                                           padding: const EdgeInsets.all(0),
                                           onSelected: (val) {
@@ -219,52 +224,52 @@ class _AllOrderUpdateScreenState extends State<AllOrderUpdateScreen> {
                                           },
                                           label: Text(ordertypeList[index]),
                                           selectedColor:
-                                              ordertypeNotifier.value == index
-                                                  ? Colors.blue
-                                                  : Colors.transparent,
+                                          ordertypeNotifier.value == index
+                                              ? Colors.blue
+                                              : Colors.transparent,
                                           showCheckmark: false,
                                           labelStyle: TextStyle(
                                               color: ordertypeNotifier.value ==
-                                                      index
+                                                  index
                                                   ? Colors.white
                                                   : Colors.black),
                                           selected:
-                                              ordertypeNotifier.value == index
-                                                  ? true
-                                                  : false,
+                                          ordertypeNotifier.value == index
+                                              ? true
+                                              : false,
                                         ),
                                       )),
-                            );
-                          })
-                    ],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  width: Get.width,
-                  decoration: BoxDecoration(
-                      border: Border.all(),
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(10))),
-                  child: Column(
-                    children: [
-                      const Text(
-                        "Select Product Type",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
+                                );
+                              })
+                        ],
                       ),
-                      const SizedBox(height: 10),
-                      ValueListenableBuilder(
-                          valueListenable: productTypeNotifier,
-                          builder: (ctx, val, _) {
-                            return Wrap(
-                              spacing: 6.0,
-                              runSpacing: 6.0,
-                              children: List.generate(
-                                  productTypeList.length,
-                                  (index) => Container(
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      width: Get.width,
+                      decoration: BoxDecoration(
+                          border: Border.all(),
+                          borderRadius:
+                          const BorderRadius.all(Radius.circular(10))),
+                      child: Column(
+                        children: [
+                          const Text(
+                            "Select Product Type",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                          const SizedBox(height: 10),
+                          ValueListenableBuilder(
+                              valueListenable: productTypeNotifier,
+                              builder: (ctx, val, _) {
+                                return Wrap(
+                                  spacing: 6.0,
+                                  runSpacing: 6.0,
+                                  children: List.generate(
+                                      productTypeList.length,
+                                          (index) => Container(
                                         margin: const EdgeInsets.only(right: 5),
                                         child: ChoiceChip(
                                           padding: const EdgeInsets.all(0),
@@ -273,68 +278,98 @@ class _AllOrderUpdateScreenState extends State<AllOrderUpdateScreen> {
                                           },
                                           label: Text(productTypeList[index]),
                                           selectedColor:
-                                              productTypeNotifier.value == index
-                                                  ? Colors.blue
-                                                  : Colors.transparent,
+                                          productTypeNotifier.value == index
+                                              ? Colors.blue
+                                              : Colors.transparent,
                                           showCheckmark: false,
                                           labelStyle: TextStyle(
                                               color:
-                                                  productTypeNotifier.value ==
-                                                          index
-                                                      ? Colors.white
-                                                      : Colors.black),
+                                              productTypeNotifier.value ==
+                                                  index
+                                                  ? Colors.white
+                                                  : Colors.black),
                                           selected:
-                                              productTypeNotifier.value == index
-                                                  ? true
-                                                  : false,
+                                          productTypeNotifier.value == index
+                                              ? true
+                                              : false,
                                         ),
                                       )),
-                            );
-                          })
-                    ],
+                                );
+                              })
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Trading Symbol",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                    RegTxtField(
-                      isReadOnly: true,
-                      ctr: tradingSymbolCtr,
-                    ),
-                    Row(
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Column(
-                          children: [
-                            const Text(
-                              "Exchanges",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 16),
-                            ),
-                            SizedBox(
-                              width: Get.width * 0.25,
-                              child: RegTxtField(
-                                isReadOnly: true,
-                                ctr: tradingExchangeCtr,
-                              ),
-                            ),
-                          ],
+                        const Text(
+                          "Trading Symbol",
+                          style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20),
+                        RegTxtField(
+                          isReadOnly: true,
+                          ctr: tradingSymbolCtr,
+                        ),
+                        SizedBox(height: 8,),
+                        Row(
+                          children: [
+                            Column(
+                              children: [
+                                const Text(
+                                  "Exchanges",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold, fontSize: 16),
+                                ),
+                                SizedBox(
+                                  width: Get.width * 0.25,
+                                  child: RegTxtField(
+                                    isReadOnly: true,
+                                    ctr: tradingExchangeCtr,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    "Lot Size",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold, fontSize: 16),
+                                  ),
+                                  SizedBox(
+                                    width: Get.width * 0.30,
+                                    child: RegTxtField(
+                                      isReadOnly: true,
+                                      ctr: lotSizeCtr,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text(
-                                "Lot Size",
+                                "Price",
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 16),
                               ),
@@ -342,153 +377,136 @@ class _AllOrderUpdateScreenState extends State<AllOrderUpdateScreen> {
                                 width: Get.width * 0.30,
                                 child: RegTxtField(
                                   isReadOnly: true,
-                                  ctr: lotSizeCtr,
+                                  ctr: priceCtr,
                                 ),
                               ),
                             ],
                           ),
-                        )
-                      ],
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Price",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                        const SizedBox(width: 30),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Enter Amount",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                              RegTxtField(
+                                  ctr: triggerPriceCtr,
+                                  hintTxt: "Enter Amount",
+                                  keyboardType: TextInputType.number),
+                            ],
                           ),
-                          SizedBox(
-                            width: Get.width * 0.30,
-                            child: RegTxtField(
-                              isReadOnly: true,
-                              ctr: priceCtr,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  ValueListenableBuilder(
+                      valueListenable: buySellSwitch,
+                      builder: (ctx, val, _) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            const Text(
+                              "Sell",
+                              style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 30),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Enter Amount",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
-                          ),
-                          RegTxtField(
-                              ctr: triggerPriceCtr,
-                              hintTxt: "Enter Amount",
-                              keyboardType: TextInputType.number),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 30),
-              ValueListenableBuilder(
-                  valueListenable: buySellSwitch,
-                  builder: (ctx, val, _) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        const Text(
-                          "Sell",
-                          style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Switch(
-                          value: buySellSwitch.value,
-                          onChanged: (val) {
-                            buySellSwitch.value = val;
-                          },
-                          activeColor: Colors.green,
-                          inactiveThumbColor: Colors.red,
-                        ),
-                        const Text(
-                          "Buy",
-                          style: TextStyle(
-                              color: Colors.green,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    );
-                  }),
-              const SizedBox(height: 30),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(child: Center(child: Text("Client Name"))),
-                  Expanded(child: Center(child: Text("qty"))),
-                  Expanded(child: Center(child: Text("Total"))),
+                            Switch(
+                              value: buySellSwitch.value,
+                              onChanged: (val) {
+                                buySellSwitch.value = val;
+                              },
+                              activeThumbColor: Colors.green,
+                              inactiveThumbColor: Colors.red,
+                            ),
+                            const Text(
+                              "Buy",
+                              style: TextStyle(
+                                  color: Colors.green,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        );
+                      }),
+                  const SizedBox(height: 30),
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(child: Center(child: Text("Client Name"))),
+                      Expanded(child: Center(child: Text("qty"))),
+                      Expanded(child: Center(child: Text("Total"))),
+                    ],
+                  ),
+                  const Divider(),
+                  Column(
+                    children: List.generate(
+                        userListWithQty.length, (index) => userListWithQty[index]),
+                  ),
+
+                  ValueListenableBuilder(
+                      valueListenable: buySellSwitch,
+                      builder: (ctx, val, _) {
+                        return AppButton(
+                            onPress: () async {
+
+                              String price = "";
+                              if (triggerPriceCtr.value.text.isNotEmpty) {
+                                price = triggerPriceCtr.value.text;
+                              } else {
+                                price = priceCtr.value.text;
+                              }
+
+                              for (int i = 0;
+                              i < userListWithQty.length;
+                              i++) {
+                                orderController.orderModifyList.add(
+                                    ModifyOrderModel(
+                                        orderid: userListWithQty[i].orderId,
+                                        clientcode: userListWithQty[i]
+                                            .userModel
+                                            .clientcode
+                                            .toString(),
+                                        variety:
+                                        varityList[varietyNotifier.value],
+                                        tradingsymbol: widget.tradingsymbol,
+                                        symboltoken: widget.symboleToken,
+                                        exchange: widget.exchange,
+                                        producttype: productTypeList[
+                                        productTypeNotifier.value],
+                                        newPrice: price,
+                                        quantity: userListWithQty[i]
+                                            .totalCtr
+                                            .text));
+                              }
+
+                              orderController.getOrdersModifyApi(
+                                  oderModifyList:
+                                  orderController.orderModifyList);
+                            },
+                            text: "Update Order");
+                      }),
+                  SizedBox(height: 30,)
                 ],
               ),
-              const Divider(),
-              Column(
-                children: List.generate(
-                    userListWithQty.length, (index) => userListWithQty[index]),
-              ),
-
-              ValueListenableBuilder(
-                  valueListenable: buySellSwitch,
-                  builder: (ctx, val, _) {
-                    return AppButton(
-                        onPress: () async {
-
-                          String price = "";
-                          if (triggerPriceCtr.value.text.isNotEmpty) {
-                            price = triggerPriceCtr.value.text;
-                          } else {
-                            price = priceCtr.value.text;
-                          }
-
-                          for (int i = 0;
-                          i < userListWithQty.length;
-                          i++) {
-                            orderController.orderModifyList.add(
-                                ModifyOrderModel(
-                                    orderid: userListWithQty[i].orderId,
-                                    clientcode: userListWithQty[i]
-                                        .userModel
-                                        .clientcode
-                                        .toString(),
-                                    variety:
-                                    varityList[varietyNotifier.value],
-                                    tradingsymbol: widget.tradingsymbol,
-                                    symboltoken: widget.symboleToken,
-                                    exchange: widget.exchange,
-                                    producttype: productTypeList[
-                                    productTypeNotifier.value],
-                                    newPrice: price,
-                                    quantity: userListWithQty[i]
-                                        .totalCtr
-                                        .text));
-                          }
-
-                          orderController.getOrdersModifyApi(
-                              oderModifyList:
-                              orderController.orderModifyList);
-                        },
-                        text: "Update Order");
-                  }),
-            ],
+            ),
           ),
-        ));
+          Obx(() => orderController.isOrderModifyLoading.value
+              ? Container(
+            color: Colors.grey.withValues(alpha: 0.3),
+            child: Center(
+              child: AppDialogs.progressWidget(),
+            ),
+          )
+              : const SizedBox(),
+          ),
+        ],));
   }
 }
 
