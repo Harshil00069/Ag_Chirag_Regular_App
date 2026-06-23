@@ -23,15 +23,28 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(debugShowCheckedModeBanner: false,
-      title: 'Algo Trading',
+    return GetMaterialApp(
+      builder: (context, child) {
+        final mediaQuery = MediaQuery.of(context);
+
+        return EasyLoading.init()(
+          context,
+          MediaQuery(
+            data: mediaQuery,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: mediaQuery.padding.bottom),
+              child: child ?? const SizedBox(),
+            ),
+          ),
+        );
+      },
+      debugShowCheckedModeBanner: false,
+      title: '',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      builder: EasyLoading.init(),
-      home:
-      const LoginScreen(),
+      home:   const LoginScreen(),
     );
   }
 }

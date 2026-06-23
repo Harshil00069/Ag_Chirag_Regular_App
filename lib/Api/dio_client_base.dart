@@ -21,7 +21,7 @@ class DioClient {
   }
 
   static Future<dynamic> clientPost(String apiName,
-      {required Map<String, String> body, int delayTime = 20000}) async {
+      {required Map<String, String> body, int delayTime = 200000}) async {
     print("Client Post $apiName And Body $body");
     try {
       final response = await getDioClient(delay: delayTime)!
@@ -44,7 +44,7 @@ class DioClient {
   }
 
   static Future clientGet(String apiName,
-      {required Map<String, String> body, int delayTime = 20000}) async {
+      {required Map<String, String> body, int delayTime = 200000}) async {
     print("Client Get $apiName And Body $body");
 
     try {

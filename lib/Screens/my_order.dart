@@ -29,6 +29,11 @@ class _MyOrderState extends State<MyOrder> {
   Widget build(BuildContext context) {
     return Scaffold(backgroundColor: Colors.white,
       appBar: AppBar(
+        actions: [
+          IconButton(onPressed: () async {
+            await orderController.getOrdersListApi();
+          }, icon: Icon(Icons.refresh))
+        ],
         automaticallyImplyLeading: false,
         iconTheme: const IconThemeData(
           color: Colors.white,

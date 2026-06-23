@@ -411,6 +411,7 @@ class _AllPositionUpdateState extends State<AllPositionUpdate> {
                   children: List.generate(userListWithQty.length,
                       (index) => userListWithQty[index]),
                 ),
+                SizedBox(height: 10,),
                 ValueListenableBuilder(
                     valueListenable: buySellSwitch,
                     builder: (ctx, val, _) {
@@ -454,6 +455,7 @@ class _AllPositionUpdateState extends State<AllPositionUpdate> {
                           },
                           text: "Update Order");
                     }),
+                SizedBox(height: 20,)
               ],
             ),
             Obx(
@@ -508,6 +510,7 @@ class GetUserListForOrder extends StatelessWidget {
                 ),
               ),
             ),
+            SizedBox(width: 8,),
             // Expanded(
             //   child: Center(
             //     child: RegTxtField(
