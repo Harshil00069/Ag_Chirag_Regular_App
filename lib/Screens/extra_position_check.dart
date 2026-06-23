@@ -20,7 +20,6 @@ class _ExtraPositionScreenState extends State<ExtraPositionScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     ctrl.getPositionList();
   }
@@ -35,7 +34,11 @@ class _ExtraPositionScreenState extends State<ExtraPositionScreen> {
     return Scaffold(backgroundColor: Colors.white,
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          actions: [],
+          actions: [
+          IconButton(onPressed: () async {
+            await ctrl.getPositionList();
+          }, icon: Icon(Icons.refresh))
+          ],
           iconTheme: const IconThemeData(
             color: Colors.white,
           ),

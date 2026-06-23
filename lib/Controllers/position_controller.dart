@@ -12,7 +12,7 @@ class PositionController extends GetxController {
   RxList<PositionData> positionList = <PositionData>[].obs;
   List<String?> commandata = [];
   RxBool isDataLoading = false.obs;
-  RxBool isPlaceOrderLoading = true.obs;
+  RxBool isPlaceOrderLoading = false.obs;
   List<PlaceOrderModel> placeOrderList = [];
 
   Future<void> getPositionList() async {
