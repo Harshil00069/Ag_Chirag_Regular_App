@@ -8,15 +8,13 @@ import 'api_urls.dart';
 class DioClient {
   static Dio? dio;
 
-  static Dio? getDioClient({int delay = 200000}) {
-    if (dio == null) {
-      dio = Dio();
-      dio!.options.baseUrl = ApiUrls.domainName;
-      dio!.options.connectTimeout = Duration(milliseconds: delay);
-      dio!.options.receiveTimeout = Duration(milliseconds: delay);
+  static Dio? getDioClient({int delay = 300000}) {
+    var dio = Dio();
+    dio.options.baseUrl = ApiUrls.domainName;
+    dio.options.connectTimeout = Duration(milliseconds: delay);
+    dio.options.receiveTimeout = Duration(milliseconds: delay);
+    dio.interceptors.add(ApiLoggerInterceptor());
 
-      dio!.interceptors.add(ApiLoggerInterceptor());
-    }
     return dio;
   }
 

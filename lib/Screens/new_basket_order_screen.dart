@@ -486,8 +486,8 @@ class _NewBasketOrderScreenState extends State<NewBasketOrderScreen> {
                         },
                         ),
                         AppButton(onPress: () async {
+
                           if (basketList.isNotEmpty) {
-                            print("basketList LL=> ${basketList.length}");
                             for (int i = 0; i < basketList.length; i++) {
                               orderController.placeOrderList.add(
                                   PlaceOrderModel(

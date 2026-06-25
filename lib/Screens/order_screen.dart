@@ -63,7 +63,7 @@ class _OrderScreenState extends State<OrderScreen> {
     tradingExchangeCtr.text = widget.watchListModel.exchange ?? "-";
 
     priceCtr.text = widget.watchListModel.ltp.toString();
-    lotSizeCtr.text = widget.watchListModel.lotsize.toString() ?? "-";
+    lotSizeCtr.text = widget.watchListModel.lotsize.toString();
 
     for (var item in homeScreenController.userList) {
       userListWithQty.add(GetUserListForOrder(
@@ -412,6 +412,11 @@ class _OrderScreenState extends State<OrderScreen> {
                     builder: (ctx, val, _) {
                       return AppButton(
                           onPress: () async {
+
+                            if (orderController.isPlaceOrderLoading.value) {
+                              return;
+                            }
+                            orderController.placeOrderList.clear();
                             String price = "";
                             if (TriggerPriceCtr.value.text.isNotEmpty) {
                               price = TriggerPriceCtr.value.text;

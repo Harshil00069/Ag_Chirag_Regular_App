@@ -115,26 +115,11 @@ class _MyOrderState extends State<MyOrder> {
                                               message:
                                                   "Please Check Status...");
                                         } else {
-                                          for (int i = 0;
-                                              i <
-                                                  orderController
-                                                      .orderList.length;
-                                              i++) {
-                                            if (symbole ==
-                                                orderController.orderList[i]
-                                                    .tradingsymbol) {
-                                              if (orderController
-                                                          .orderList[i].status
-                                                          .toString() ==
-                                                      "complete" ||
-                                                  orderController
-                                                          .orderList[i].status
-                                                          .toString() ==
-                                                      "rejected" ||
-                                                  orderController
-                                                          .orderList[i].status
-                                                          .toString() ==
-                                                      "cancelled after market order") {
+                                          for (int i = 0; i < orderController.orderList.length; i++) {
+                                            if (symbole == orderController.orderList[i].tradingsymbol) {
+                                              if (orderController.orderList[i].status.toString() == "complete" ||
+                                                  orderController.orderList[i].status.toString() == "rejected" ||
+                                                  orderController.orderList[i].status.toString() == "cancelled after market order") {
                                               } else {
                                                 Get.to(AllOrderUpdateScreen(
                                                   orderType: 0,
@@ -312,6 +297,11 @@ class _MyOrderState extends State<MyOrder> {
                                   title: "Symbol :",
                                   value: orderController
                                       .orderList[index].tradingsymbol,
+                                  color: Colors.black),
+                              commanUi(
+                                  title: "Time :",
+                                  value: orderController
+                                      .orderList[index].updatetime,
                                   color: Colors.black),
                               Divider(),
                               Padding(

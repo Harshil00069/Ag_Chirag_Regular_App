@@ -20,8 +20,7 @@ class WatchListModel {
     tradingsymbol = json['tradingsymbol'];
     symboltoken = json['symboltoken'];
     // Safely handles both integers and doubles from the API response
-    ltp =(json['ltp'] as num?)?.toDouble() ?? 0.0;
-
+    ltp =double.tryParse(json['ltp'].toString()) ?? 0.0;
     lotsize = json['lotsize'];
   }
 

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:treding/Api/api_implementor.dart';
 import 'package:treding/Controllers/homepage_controller.dart';
 import 'package:treding/model/modify_order_model.dart';
@@ -18,66 +19,55 @@ class OrderController extends GetxController {
   RxBool isPlaceOrderLoading = false.obs;
   RxBool isOrderModifyLoading = false.obs;
 
-  List<String> statusList = [
-    "open",
-    "after market order req received",
-    "cancelled after market order",
-    "cancelled",
-    "rejected"
-  ];
 
   Future<void> getOrdersListApi() async {
     orderList.clear();
     isOrderLoading.value = true;
+
     try {
       var response = await ApiImplementor.getOrdersListApiImplementer(
-          userList: homeScreenController.commonClientJsonDataList);
+        userList: homeScreenController.commonClientJsonDataList,
+      );
 
       if (response.results.isNotEmpty) {
         for (int i = 0; i < response.results.length; i++) {
           orderList.addAll(response.results[i].data);
         }
+
         if (orderList.isNotEmpty) {
           for (int k = 0; k < orderList.length; k++) {
             orderList[k].variety = "NORMAL";
+
             int index = homeScreenController.userList.indexWhere(
-                (data) => data.clientcode == orderList[k].clientcode);
+                  (data) => data.clientcode == orderList[k].clientcode,
+            );
 
             if (index != -1) {
-              // 3. Extract the name from your user object
-              orderList[k].clientName = homeScreenController
-                      .userList[index].username ??
-                  ""; // Change '.name' to whatever your property is called (e.g., clientName)
-              // print("Found Client Name: ${orderList[k].clientName}");
+              orderList[k].clientName =
+                  homeScreenController.userList[index].username ?? "";
             }
           }
-          orderList.sort((a, b) => a.tradingsymbol.compareTo(b.tradingsymbol));
 
+          // Latest order first
           orderList.sort((a, b) {
-            // Pending first
-            if (a.status == "open" && b.status != "open") {
-              return -1;
-            }
-            if (a.status != "open" && b.status == "open") {
-              return 1;
-            }
+            try {
+              final dateA =
+              DateFormat("dd-MMM-yyyy HH:mm:ss").parse(a.updatetime);
 
-            // Cancelled last
-            if (a.status == "cancelled" && b.status != "cancelled") {
-              return 1;
-            }
-            if (a.status != "cancelled" && b.status == "cancelled") {
-              return -1;
-            }
+              final dateB =
+              DateFormat("dd-MMM-yyyy HH:mm:ss").parse(b.updatetime);
 
-            // Then sort by symbol
-            return a.tradingsymbol.compareTo(b.tradingsymbol);
+              return dateB.compareTo(dateA);
+            } catch (e) {
+              return 0;
+            }
           });
         }
+
         update();
       }
     } catch (e) {
-      print("Err=> ${e}");
+      print("Err=> $e");
     } finally {
       isOrderLoading.value = false;
     }
@@ -87,8 +77,12 @@ class OrderController extends GetxController {
     isOrderLoading.value = true;
     commonOrderList.clear();
     var symbolToken = orderList[position].symboltoken;
-    commonOrderList =
-        orderList.where((e) => e.symboltoken == symbolToken).toList();
+    // commonOrderList = orderList.where((e) => e.symboltoken == symbolToken).toList();
+    commonOrderList = orderList
+        .where((e) =>
+    e.symboltoken == symbolToken &&
+        (e.status.toLowerCase() == "open"))
+        .toList();
     try {
       var response = await ApiImplementor.cancelOrdersApiImplementer(
           userList: homeScreenController.commonClientJsonDataList,

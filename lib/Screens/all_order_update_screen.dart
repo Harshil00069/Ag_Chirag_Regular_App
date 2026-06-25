@@ -98,7 +98,7 @@ class _AllOrderUpdateScreenState extends State<AllOrderUpdateScreen> {
       int kk = (qty / lot).floor();
       int tt = (kk * lot).floor();
 
-      if (widget.tradingsymbol == orderController.orderList[i].tradingsymbol) {
+      if (widget.tradingsymbol == orderController.orderList[i].tradingsymbol && orderController.orderList[i].status.toString() =="open") {
         int index = homeScreenController.userList.indexWhere((data) {
           return data.clientcode == orderController.orderList[i].clientcode;
         });
