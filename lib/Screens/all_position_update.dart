@@ -98,7 +98,7 @@ class _AllPositionUpdateState extends State<AllPositionUpdate> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(backgroundColor: Colors.white,
         appBar: AppBar(
           iconTheme: const IconThemeData(
             color: Colors.white,
@@ -112,351 +112,355 @@ class _AllPositionUpdateState extends State<AllPositionUpdate> {
         body: SingleChildScrollView(
             child: Stack(
           children: [
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    width: Get.width,
-                    decoration: BoxDecoration(
-                        border: Border.all(),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(10))),
-                    child: Column(
-                      children: [
-                        const Text(
-                          "Select Variety",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
-                        ),
-                        const SizedBox(height: 10),
-                        ValueListenableBuilder(
-                            valueListenable: varietyNotifier,
-                            builder: (ctx, val, _) {
-                              return Wrap(
-                                spacing: 6.0,
-                                runSpacing: 6.0,
-                                children: List.generate(
-                                    varityList.length,
-                                    (index) => Container(
-                                          margin:
-                                              const EdgeInsets.only(right: 10),
-                                          child: ChoiceChip(
-                                            padding: const EdgeInsets.all(0),
-                                            onSelected: (val) {
-                                              varietyNotifier.value = index;
-                                            },
-                                            label: Text(varityList[index]),
-                                            selectedColor:
-                                                varietyNotifier.value == index
-                                                    ? Colors.blue
-                                                    : Colors.transparent,
-                                            showCheckmark: false,
-                                            labelStyle: TextStyle(
-                                                color: varietyNotifier.value ==
-                                                        index
-                                                    ? Colors.white
-                                                    : Colors.black),
-                                            selected:
-                                                varietyNotifier.value == index
-                                                    ? true
-                                                    : false,
-                                          ),
-                                        )),
-                              );
-                            }),
-                        const SizedBox(height: 8),
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    width: Get.width,
-                    decoration: BoxDecoration(
-                        border: Border.all(),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(10))),
-                    child: Column(
-                      children: [
-                        const Text(
-                          "Select Order Type",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
-                        ),
-                        const SizedBox(height: 10),
-                        ValueListenableBuilder(
-                            valueListenable: ordertypeNotifier,
-                            builder: (ctx, val, _) {
-                              return Wrap(
-                                spacing: 6.0,
-                                runSpacing: 6.0,
-                                children: List.generate(
-                                    ordertypeList.length,
-                                    (index) => Container(
-                                          margin:
-                                              const EdgeInsets.only(right: 10),
-                                          child: ChoiceChip(
-                                            padding: const EdgeInsets.all(0),
-                                            onSelected: (val) {
-                                              ordertypeNotifier.value = index;
-                                            },
-                                            label: Text(ordertypeList[index]),
-                                            selectedColor:
-                                                ordertypeNotifier.value == index
-                                                    ? Colors.blue
-                                                    : Colors.transparent,
-                                            showCheckmark: false,
-                                            labelStyle: TextStyle(
-                                                color:
-                                                    ordertypeNotifier.value ==
-                                                            index
-                                                        ? Colors.white
-                                                        : Colors.black),
-                                            selected:
-                                                ordertypeNotifier.value == index
-                                                    ? true
-                                                    : false,
-                                          ),
-                                        )),
-                              );
-                            })
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    width: Get.width,
-                    decoration: BoxDecoration(
-                        border: Border.all(),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(10))),
-                    child: Column(
-                      children: [
-                        const Text(
-                          "Select Product Type",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
-                        ),
-                        const SizedBox(height: 10),
-                        ValueListenableBuilder(
-                            valueListenable: productTypeNotifier,
-                            builder: (ctx, val, _) {
-                              return Wrap(
-                                spacing: 6.0,
-                                runSpacing: 6.0,
-                                children: List.generate(
-                                    productTypeList.length,
-                                    (index) => Container(
-                                          margin:
-                                              const EdgeInsets.only(right: 5),
-                                          child: ChoiceChip(
-                                            padding: const EdgeInsets.all(0),
-                                            onSelected: (val) {
-                                              productTypeNotifier.value = index;
-                                            },
-                                            label: Text(productTypeList[index]),
-                                            selectedColor:
-                                                productTypeNotifier.value ==
-                                                        index
-                                                    ? Colors.blue
-                                                    : Colors.transparent,
-                                            showCheckmark: false,
-                                            labelStyle: TextStyle(
-                                                color:
-                                                    productTypeNotifier.value ==
-                                                            index
-                                                        ? Colors.white
-                                                        : Colors.black),
-                                            selected:
-                                                productTypeNotifier.value ==
-                                                        index
-                                                    ? true
-                                                    : false,
-                                          ),
-                                        )),
-                              );
-                            })
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "Trading Symbol",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                      RegTxtField(
-                        isReadOnly: true,
-                        ctr: tradingSymbolCtr,
-                      ),
-                      Column(
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      width: Get.width,
+                      decoration: BoxDecoration(
+                          border: Border.all(),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10))),
+                      child: Column(
                         children: [
                           const Text(
-                            "Exchanges",
+                            "Select Variety",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 16),
                           ),
-                          SizedBox(
-                            width: Get.width * 0.25,
-                            child: RegTxtField(
-                              isReadOnly: true,
-                              ctr: tradingExchangeCtr,
-                            ),
-                          ),
+                          const SizedBox(height: 10),
+                          ValueListenableBuilder(
+                              valueListenable: varietyNotifier,
+                              builder: (ctx, val, _) {
+                                return Wrap(
+                                  spacing: 6.0,
+                                  runSpacing: 6.0,
+                                  children: List.generate(
+                                      varityList.length,
+                                      (index) => Container(
+                                            margin:
+                                                const EdgeInsets.only(right: 10),
+                                            child: ChoiceChip(
+                                              padding: const EdgeInsets.all(0),
+                                              onSelected: (val) {
+                                                varietyNotifier.value = index;
+                                              },
+                                              label: Text(varityList[index]),
+                                              selectedColor:
+                                                  varietyNotifier.value == index
+                                                      ? Colors.blue
+                                                      : Colors.transparent,
+                                              showCheckmark: false,
+                                              labelStyle: TextStyle(
+                                                  color: varietyNotifier.value ==
+                                                          index
+                                                      ? Colors.white
+                                                      : Colors.black),
+                                              selected:
+                                                  varietyNotifier.value == index
+                                                      ? true
+                                                      : false,
+                                            ),
+                                          )),
+                                );
+                              }),
+                          const SizedBox(height: 8),
                         ],
-                      )
-                    ],
+                      ),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      width: Get.width,
+                      decoration: BoxDecoration(
+                          border: Border.all(),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10))),
+                      child: Column(
+                        children: [
+                          const Text(
+                            "Select Order Type",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                          const SizedBox(height: 10),
+                          ValueListenableBuilder(
+                              valueListenable: ordertypeNotifier,
+                              builder: (ctx, val, _) {
+                                return Wrap(
+                                  spacing: 6.0,
+                                  runSpacing: 6.0,
+                                  children: List.generate(
+                                      ordertypeList.length,
+                                      (index) => Container(
+                                            margin:
+                                                const EdgeInsets.only(right: 10),
+                                            child: ChoiceChip(
+                                              padding: const EdgeInsets.all(0),
+                                              onSelected: (val) {
+                                                ordertypeNotifier.value = index;
+                                              },
+                                              label: Text(ordertypeList[index]),
+                                              selectedColor:
+                                                  ordertypeNotifier.value == index
+                                                      ? Colors.blue
+                                                      : Colors.transparent,
+                                              showCheckmark: false,
+                                              labelStyle: TextStyle(
+                                                  color:
+                                                      ordertypeNotifier.value ==
+                                                              index
+                                                          ? Colors.white
+                                                          : Colors.black),
+                                              selected:
+                                                  ordertypeNotifier.value == index
+                                                      ? true
+                                                      : false,
+                                            ),
+                                          )),
+                                );
+                              })
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      width: Get.width,
+                      decoration: BoxDecoration(
+                          border: Border.all(),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10))),
+                      child: Column(
+                        children: [
+                          const Text(
+                            "Select Product Type",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                          const SizedBox(height: 10),
+                          ValueListenableBuilder(
+                              valueListenable: productTypeNotifier,
+                              builder: (ctx, val, _) {
+                                return Wrap(
+                                  spacing: 6.0,
+                                  runSpacing: 6.0,
+                                  children: List.generate(
+                                      productTypeList.length,
+                                      (index) => Container(
+                                            margin:
+                                                const EdgeInsets.only(right: 5),
+                                            child: ChoiceChip(
+                                              padding: const EdgeInsets.all(0),
+                                              onSelected: (val) {
+                                                productTypeNotifier.value = index;
+                                              },
+                                              label: Text(productTypeList[index]),
+                                              selectedColor:
+                                                  productTypeNotifier.value ==
+                                                          index
+                                                      ? Colors.blue
+                                                      : Colors.transparent,
+                                              showCheckmark: false,
+                                              labelStyle: TextStyle(
+                                                  color:
+                                                      productTypeNotifier.value ==
+                                                              index
+                                                          ? Colors.white
+                                                          : Colors.black),
+                                              selected:
+                                                  productTypeNotifier.value ==
+                                                          index
+                                                      ? true
+                                                      : false,
+                                            ),
+                                          )),
+                                );
+                              })
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Trading Symbol",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                        RegTxtField(
+                          isReadOnly: true,
+                          ctr: tradingSymbolCtr,
+                        ),
+                        SizedBox(height: 6,),
+                        Column(
                           children: [
                             const Text(
-                              "Price",
+                              "Exchanges",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 16),
                             ),
                             SizedBox(
-                              width: Get.width * 0.40,
+                              width: Get.width * 0.25,
                               child: RegTxtField(
                                 isReadOnly: true,
-                                ctr: priceCtr,
+                                ctr: tradingExchangeCtr,
                               ),
                             ),
                           ],
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Price",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                              SizedBox(
+                                width: Get.width * 0.40,
+                                child: RegTxtField(
+                                  isReadOnly: true,
+                                  ctr: priceCtr,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 30),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Enter Amount",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 16),
-                            ),
-                            RegTxtField(
-                                ctr: triggerPriceCtr,
-                                hintTxt: "Enter Amount",
-                                keyboardType: TextInputType.number),
-                          ],
+                        const SizedBox(width: 30),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Enter Amount",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                              RegTxtField(
+                                  ctr: triggerPriceCtr,
+                                  hintTxt: "Enter Amount",
+                                  keyboardType: TextInputType.number),
+                            ],
+                          ),
                         ),
-                      ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  IgnorePointer(
+                    ignoring: true,
+                    child: ValueListenableBuilder(
+                        valueListenable: buySellSwitch,
+                        builder: (ctx, val, _) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              const Text(
+                                "Sell",
+                                style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Switch(
+                                value: buySellSwitch.value,
+                                onChanged: (val) {
+                                  buySellSwitch.value = val;
+                                },
+                                activeThumbColor: Colors.green,
+                                inactiveThumbColor: Colors.red,
+                              ),
+                              const Text(
+                                "Buy",
+                                style: TextStyle(
+                                    color: Colors.green,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          );
+                        }),
+                  ),
+                  const SizedBox(height: 30),
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(child: Center(child: Text("Client Name"))),
+                      Expanded(child: Center(child: Text("Price"))),
+                      Expanded(child: Center(child: Text("qty"))),
                     ],
                   ),
-                ),
-                const SizedBox(height: 30),
-                IgnorePointer(
-                  ignoring: true,
-                  child: ValueListenableBuilder(
+                  const Divider(),
+                  Column(
+                    children: List.generate(userListWithQty.length,
+                        (index) => userListWithQty[index]),
+                  ),
+                  SizedBox(height: 10,),
+                  ValueListenableBuilder(
                       valueListenable: buySellSwitch,
                       builder: (ctx, val, _) {
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            const Text(
-                              "Sell",
-                              style: TextStyle(
-                                  color: Colors.red,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            Switch(
-                              value: buySellSwitch.value,
-                              onChanged: (val) {
-                                buySellSwitch.value = val;
-                              },
-                              activeThumbColor: Colors.green,
-                              inactiveThumbColor: Colors.red,
-                            ),
-                            const Text(
-                              "Buy",
-                              style: TextStyle(
-                                  color: Colors.green,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        );
-                      }),
-                ),
-                const SizedBox(height: 30),
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(child: Center(child: Text("Client Name"))),
-                    Expanded(child: Center(child: Text("Price"))),
-                    Expanded(child: Center(child: Text("qty"))),
-                  ],
-                ),
-                const Divider(),
-                Column(
-                  children: List.generate(userListWithQty.length,
-                      (index) => userListWithQty[index]),
-                ),
-                SizedBox(height: 10,),
-                ValueListenableBuilder(
-                    valueListenable: buySellSwitch,
-                    builder: (ctx, val, _) {
-                      return AppButton(
-                          onPress: () async {
-                            ctrl.placeOrderList.clear();
-                            String price = "";
-                            if (triggerPriceCtr.value.text.isNotEmpty) {
-                              price = triggerPriceCtr.value.text;
-                            } else {
-                              price = priceCtr.value.text;
-                            }
+                        return AppButton(
+                            onPress: () async {
+                              ctrl.placeOrderList.clear();
+                              String price = "";
+                              if (triggerPriceCtr.value.text.isNotEmpty) {
+                                price = triggerPriceCtr.value.text;
+                              } else {
+                                price = priceCtr.value.text;
+                              }
 
-                            for (int i = 0; i < userListWithQty.length; i++) {
-                              ctrl.placeOrderList.add(PlaceOrderModel(
-                                  clientcode: userListWithQty[i]
-                                      .userModel
-                                      .clientcode
-                                      .toString(),
-                                  variety: varityList[varietyNotifier.value],
-                                  tradingsymbol: widget.tradingsymbol,
-                                  symboltoken: widget.symboleToken,
-                                  transactiontype:
-                                      buySellSwitch.value ? "BUY" : "SELL",
-                                  exchange: widget.exchange,
-                                  ordertype:
-                                      ordertypeList[ordertypeNotifier.value],
-                                  producttype: productTypeList[
-                                      productTypeNotifier.value],
-                                  duration: "DAY",
-                                  price: price,
-                                  quantity: userListWithQty[i].qtyCtr.text));
-                            }
-                            var cleanList = ctrl.placeOrderList
-                                .map((e) => e.toJson())
-                                .toList();
-                            print(jsonEncode(cleanList));
-                            ctrl.getPlaceOrdersApi(
-                                placeOderList: ctrl.placeOrderList,
-                                isBasketOrder: false);
-                          },
-                          text: "Update Order");
-                    }),
-                SizedBox(height: 20,)
-              ],
+                              for (int i = 0; i < userListWithQty.length; i++) {
+                                ctrl.placeOrderList.add(PlaceOrderModel(
+                                    clientcode: userListWithQty[i]
+                                        .userModel
+                                        .clientcode
+                                        .toString(),
+                                    variety: varityList[varietyNotifier.value],
+                                    tradingsymbol: widget.tradingsymbol,
+                                    symboltoken: widget.symboleToken,
+                                    transactiontype:
+                                        buySellSwitch.value ? "BUY" : "SELL",
+                                    exchange: widget.exchange,
+                                    ordertype:
+                                        ordertypeList[ordertypeNotifier.value],
+                                    producttype: productTypeList[
+                                        productTypeNotifier.value],
+                                    duration: "DAY",
+                                    price: price,
+                                    quantity: userListWithQty[i].qtyCtr.text));
+                              }
+                              var cleanList = ctrl.placeOrderList
+                                  .map((e) => e.toJson())
+                                  .toList();
+                              print(jsonEncode(cleanList));
+                              ctrl.getPlaceOrdersApi(
+                                  placeOderList: ctrl.placeOrderList,
+                                  isBasketOrder: false);
+                            },
+                            text: "Update Order");
+                      }),
+                  SizedBox(height: 20,)
+                ],
+              ),
             ),
             Obx(
               () => ctrl.isPlaceOrderLoading.value

@@ -2,7 +2,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:treding/Controllers/order_controller.dart';
-import 'package:treding/Utils/helper.dart';
 import 'package:treding/Utils/material_color_generator.dart';
 
 import '../Utils/app_font.dart';
@@ -99,65 +98,36 @@ class _MyOrderState extends State<MyOrder> {
                                                         BorderRadius.circular(
                                                             10)))),
                                         onPressed: () async {
-                                          orderController.commonOrderList.clear();
-                                          String symbole = orderController
-                                              .orderList[index].tradingsymbol
-                                              .toString();
-                                          String status = orderController
-                                              .orderList[index].status
-                                              .toString();
-
-                                          if (status == "rejected" ||
-                                              status ==
-                                                  "cancelled after market order" ||
-                                              status == "cancelled" ||
-                                              status == "complete") {
-                                            Helper().showMessage(
-                                                message:
-                                                    "Please Check Status...");
-                                          } else {
-                                            for (int i = 0; i < orderController.orderList.length; i++) {
-                                              if (symbole == orderController.orderList[i].tradingsymbol) {
-                                                if (orderController.orderList[i].status.toString() == "complete" ||
-                                                    orderController.orderList[i].status.toString() == "rejected" ||
-                                                    orderController.orderList[i].status.toString() == "cancelled after market order") {
-                                                } else {
-                                                  Get.to(AllOrderUpdateScreen(
-                                                    orderType: 0,
-                                                    transactionType:
-                                                        orderController
-                                                            .orderList[index]
-                                                            .transactiontype
-                                                            .toString(),
-                                                    symboleToken: orderController
-                                                        .orderList[index]
-                                                        .symboltoken
-                                                        .toString(),
-                                                    productType:
-                                                        selectedProductType(
-                                                            index: index),
-                                                    variety: selectedVariety(
-                                                        index: index),
-                                                    lotSize: orderController
-                                                        .orderList[index].lotsize
-                                                        .toString(),
-                                                    tradingsymbol: orderController
-                                                        .orderList[index]
-                                                        .tradingsymbol
-                                                        .toString(),
-                                                    ltp: orderController
-                                                        .orderList[index].price
-                                                        .toString(),
-                                                    exchange: orderController
-                                                        .orderList[index].exchange
-                                                        .toString(),
-                                                  ));
-                                                }
-                                              }
-                                            }
-                                            print(
-                                                "Lee=> ${orderController.commonOrderList.length}");
-                                          }
+                                          Get.to(AllOrderUpdateScreen(
+                                            orderType: 0,
+                                            transactionType:
+                                            orderController
+                                                .orderList[index]
+                                                .transactiontype
+                                                .toString(),
+                                            symboleToken: orderController
+                                                .orderList[index]
+                                                .symboltoken
+                                                .toString(),
+                                            productType:
+                                            selectedProductType(
+                                                index: index),
+                                            variety: selectedVariety(
+                                                index: index),
+                                            lotSize: orderController
+                                                .orderList[index].lotsize
+                                                .toString(),
+                                            tradingsymbol: orderController
+                                                .orderList[index]
+                                                .tradingsymbol
+                                                .toString(),
+                                            ltp: orderController
+                                                .orderList[index].price
+                                                .toString(),
+                                            exchange: orderController
+                                                .orderList[index].exchange
+                                                .toString(),
+                                          ));
                                         },
                                         child: const Text(
                                           "Bulk Edit",
@@ -179,55 +149,43 @@ class _MyOrderState extends State<MyOrder> {
                                       label: const Text("Edit"),
                                       onPressed: () async {
 
-                                        String status = orderController
-                                            .orderList[index].status
-                                            .toString();
-                                        if (status == "rejected" ||
-                                            status ==
-                                                "cancelled after market order" ||
-                                            status == "cancelled" ||
-                                            status == "complete") {
-                                          Helper().showMessage(
-                                              message: "Please Check Status....");
-                                        } else {
-                                          Get.to(OrderUpdateScreen(
-                                            orderId: orderController
-                                                .orderList[index].orderid
-                                                .toString(),
-                                            transactionType: orderController
-                                                .orderList[index].transactiontype
-                                                .toString(),
-                                            symboleToken: orderController
-                                                .orderList[index].symboltoken
-                                                .toString(),
-                                            orderid: orderController
-                                                .orderList[index].orderid
-                                                .toString(),
-                                            productType: orderController
-                                                .orderList[index].producttype
-                                                .toString(),
-                                            userName: orderController
-                                                .orderList[index].clientName
-                                                .toString(),
-                                            variety: selectedVariety(index: index),
-                                            lotSize: orderController
-                                                .orderList[index].lotsize
-                                                .toString(),
-                                            qty: orderController
-                                                .orderList[index].quantity
-                                                .toString(),
-                                            tradingsymbol: orderController
-                                                .orderList[index].tradingsymbol
-                                                .toString(),
-                                            ltp: orderController
-                                                .orderList[index].price
-                                                .toString(),
-                                            exchange: orderController
-                                                .orderList[index].exchange
-                                                .toString(),
-                                            isRatioOrder: false,
-                                          ));
-                                        }
+                                        Get.to(OrderUpdateScreen(
+                                          orderId: orderController
+                                              .orderList[index].orderid
+                                              .toString(),
+                                          transactionType: orderController
+                                              .orderList[index].transactiontype
+                                              .toString(),
+                                          symboleToken: orderController
+                                              .orderList[index].symboltoken
+                                              .toString(),
+                                          orderid: orderController
+                                              .orderList[index].orderid
+                                              .toString(),
+                                          productType: orderController
+                                              .orderList[index].producttype
+                                              .toString(),
+                                          userName: orderController
+                                              .orderList[index].clientName
+                                              .toString(),
+                                          variety: selectedVariety(index: index),
+                                          lotSize: orderController
+                                              .orderList[index].lotsize
+                                              .toString(),
+                                          qty: orderController
+                                              .orderList[index].quantity
+                                              .toString(),
+                                          tradingsymbol: orderController
+                                              .orderList[index].tradingsymbol
+                                              .toString(),
+                                          ltp: orderController
+                                              .orderList[index].price
+                                              .toString(),
+                                          exchange: orderController
+                                              .orderList[index].exchange
+                                              .toString(),
+                                          isRatioOrder: false,
+                                        ));
                                       },
                                     ),
                                     TextButton.icon(

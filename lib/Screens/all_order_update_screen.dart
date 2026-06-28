@@ -455,7 +455,7 @@ class _AllOrderUpdateScreenState extends State<AllOrderUpdateScreen> {
                       builder: (ctx, val, _) {
                         return AppButton(
                             onPress: () async {
-
+                              orderController.orderModifyList.clear();
                               String price = "";
                               if (triggerPriceCtr.value.text.isNotEmpty) {
                                 price = triggerPriceCtr.value.text;

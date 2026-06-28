@@ -379,7 +379,7 @@ class _OrderScreenState extends State<OrderScreen> {
                             onChanged: (val) {
                               buySellSwitch.value = val;
                             },
-                            activeColor: Colors.green,
+                            activeThumbColor: Colors.green,
                             inactiveThumbColor: Colors.red,
                           ),
                           const Text(
