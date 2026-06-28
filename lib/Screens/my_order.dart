@@ -81,177 +81,179 @@ class _MyOrderState extends State<MyOrder> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  TextButton(
+                              Visibility(visible: orderController.orderList[index].status == "open",
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    TextButton(
+                                        style: ButtonStyle(
+                                            shape: WidgetStateProperty.all(
+                                                RoundedRectangleBorder(
+                                                    side: const BorderSide(
+                                                      color: Colors.red,
+                                                      // your color here
+                                                      width: 1,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)))),
+                                        onPressed: () async {
+                                          orderController.commonOrderList.clear();
+                                          String symbole = orderController
+                                              .orderList[index].tradingsymbol
+                                              .toString();
+                                          String status = orderController
+                                              .orderList[index].status
+                                              .toString();
+
+                                          if (status == "rejected" ||
+                                              status ==
+                                                  "cancelled after market order" ||
+                                              status == "cancelled" ||
+                                              status == "complete") {
+                                            Helper().showMessage(
+                                                message:
+                                                    "Please Check Status...");
+                                          } else {
+                                            for (int i = 0; i < orderController.orderList.length; i++) {
+                                              if (symbole == orderController.orderList[i].tradingsymbol) {
+                                                if (orderController.orderList[i].status.toString() == "complete" ||
+                                                    orderController.orderList[i].status.toString() == "rejected" ||
+                                                    orderController.orderList[i].status.toString() == "cancelled after market order") {
+                                                } else {
+                                                  Get.to(AllOrderUpdateScreen(
+                                                    orderType: 0,
+                                                    transactionType:
+                                                        orderController
+                                                            .orderList[index]
+                                                            .transactiontype
+                                                            .toString(),
+                                                    symboleToken: orderController
+                                                        .orderList[index]
+                                                        .symboltoken
+                                                        .toString(),
+                                                    productType:
+                                                        selectedProductType(
+                                                            index: index),
+                                                    variety: selectedVariety(
+                                                        index: index),
+                                                    lotSize: orderController
+                                                        .orderList[index].lotsize
+                                                        .toString(),
+                                                    tradingsymbol: orderController
+                                                        .orderList[index]
+                                                        .tradingsymbol
+                                                        .toString(),
+                                                    ltp: orderController
+                                                        .orderList[index].price
+                                                        .toString(),
+                                                    exchange: orderController
+                                                        .orderList[index].exchange
+                                                        .toString(),
+                                                  ));
+                                                }
+                                              }
+                                            }
+                                            print(
+                                                "Lee=> ${orderController.commonOrderList.length}");
+                                          }
+                                        },
+                                        child: const Text(
+                                          "Bulk Edit",
+                                          style: TextStyle(color: Colors.red),
+                                        )),
+                                    TextButton.icon(
                                       style: ButtonStyle(
                                           shape: WidgetStateProperty.all(
                                               RoundedRectangleBorder(
                                                   side: const BorderSide(
-                                                    color: Colors.red,
-                                                    // your color here
+                                                    color: Colors
+                                                        .red, // your color here
                                                     width: 1,
                                                   ),
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           10)))),
+                                      icon: const Icon(Icons.edit),
+                                      label: const Text("Edit"),
                                       onPressed: () async {
-                                        orderController.commonOrderList.clear();
-                                        String symbole = orderController
-                                            .orderList[index].tradingsymbol
-                                            .toString();
+
                                         String status = orderController
                                             .orderList[index].status
                                             .toString();
-
                                         if (status == "rejected" ||
                                             status ==
                                                 "cancelled after market order" ||
                                             status == "cancelled" ||
                                             status == "complete") {
                                           Helper().showMessage(
-                                              message:
-                                                  "Please Check Status...");
+                                              message: "Please Check Status....");
                                         } else {
-                                          for (int i = 0; i < orderController.orderList.length; i++) {
-                                            if (symbole == orderController.orderList[i].tradingsymbol) {
-                                              if (orderController.orderList[i].status.toString() == "complete" ||
-                                                  orderController.orderList[i].status.toString() == "rejected" ||
-                                                  orderController.orderList[i].status.toString() == "cancelled after market order") {
-                                              } else {
-                                                Get.to(AllOrderUpdateScreen(
-                                                  orderType: 0,
-                                                  transactionType:
-                                                      orderController
-                                                          .orderList[index]
-                                                          .transactiontype
-                                                          .toString(),
-                                                  symboleToken: orderController
-                                                      .orderList[index]
-                                                      .symboltoken
-                                                      .toString(),
-                                                  productType:
-                                                      selectedProductType(
-                                                          index: index),
-                                                  variety: selectedVariety(
-                                                      index: index),
-                                                  lotSize: orderController
-                                                      .orderList[index].lotsize
-                                                      .toString(),
-                                                  tradingsymbol: orderController
-                                                      .orderList[index]
-                                                      .tradingsymbol
-                                                      .toString(),
-                                                  ltp: orderController
-                                                      .orderList[index].price
-                                                      .toString(),
-                                                  exchange: orderController
-                                                      .orderList[index].exchange
-                                                      .toString(),
-                                                ));
-                                              }
-                                            }
-                                          }
-                                          print(
-                                              "Lee=> ${orderController.commonOrderList.length}");
+                                          Get.to(OrderUpdateScreen(
+                                            orderId: orderController
+                                                .orderList[index].orderid
+                                                .toString(),
+                                            transactionType: orderController
+                                                .orderList[index].transactiontype
+                                                .toString(),
+                                            symboleToken: orderController
+                                                .orderList[index].symboltoken
+                                                .toString(),
+                                            orderid: orderController
+                                                .orderList[index].orderid
+                                                .toString(),
+                                            productType: orderController
+                                                .orderList[index].producttype
+                                                .toString(),
+                                            userName: orderController
+                                                .orderList[index].clientName
+                                                .toString(),
+                                            variety: selectedVariety(index: index),
+                                            lotSize: orderController
+                                                .orderList[index].lotsize
+                                                .toString(),
+                                            qty: orderController
+                                                .orderList[index].quantity
+                                                .toString(),
+                                            tradingsymbol: orderController
+                                                .orderList[index].tradingsymbol
+                                                .toString(),
+                                            ltp: orderController
+                                                .orderList[index].price
+                                                .toString(),
+                                            exchange: orderController
+                                                .orderList[index].exchange
+                                                .toString(),
+                                            isRatioOrder: false,
+                                          ));
                                         }
                                       },
-                                      child: const Text(
-                                        "Bulk Edit",
-                                        style: TextStyle(color: Colors.red),
-                                      )),
-                                  TextButton.icon(
-                                    style: ButtonStyle(
-                                        shape: WidgetStateProperty.all(
-                                            RoundedRectangleBorder(
-                                                side: const BorderSide(
-                                                  color: Colors
-                                                      .red, // your color here
-                                                  width: 1,
-                                                ),
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        10)))),
-                                    icon: const Icon(Icons.edit),
-                                    label: const Text("Edit"),
-                                    onPressed: () async {
-
-                                      String status = orderController
-                                          .orderList[index].status
-                                          .toString();
-                                      if (status == "rejected" ||
-                                          status ==
-                                              "cancelled after market order" ||
-                                          status == "cancelled" ||
-                                          status == "complete") {
-                                        Helper().showMessage(
-                                            message: "Please Check Status....");
-                                      } else {
-                                        Get.to(OrderUpdateScreen(
-                                          orderId: orderController
-                                              .orderList[index].orderid
-                                              .toString(),
-                                          transactionType: orderController
-                                              .orderList[index].transactiontype
-                                              .toString(),
-                                          symboleToken: orderController
-                                              .orderList[index].symboltoken
-                                              .toString(),
-                                          orderid: orderController
-                                              .orderList[index].orderid
-                                              .toString(),
-                                          productType: orderController
-                                              .orderList[index].producttype
-                                              .toString(),
-                                          userName: orderController
-                                              .orderList[index].clientName
-                                              .toString(),
-                                          variety: selectedVariety(index: index),
-                                          lotSize: orderController
-                                              .orderList[index].lotsize
-                                              .toString(),
-                                          qty: orderController
-                                              .orderList[index].quantity
-                                              .toString(),
-                                          tradingsymbol: orderController
-                                              .orderList[index].tradingsymbol
-                                              .toString(),
-                                          ltp: orderController
-                                              .orderList[index].price
-                                              .toString(),
-                                          exchange: orderController
-                                              .orderList[index].exchange
-                                              .toString(),
-                                          isRatioOrder: false,
-                                        ));
-                                      }
-                                    },
-                                  ),
-                                  TextButton.icon(
-                                    style: ButtonStyle(
-                                        shape: WidgetStateProperty.all(
-                                            RoundedRectangleBorder(
-                                                side: const BorderSide(
-                                                  color: Colors
-                                                      .red, // your color here
-                                                  width: 1,
-                                                ),
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        10)))),
-                                    icon: const Icon(
-                                      Icons.delete,
-                                      color: Colors.red,
                                     ),
-                                    onPressed: () async {
-                                      await orderController.getCancelOrdersApi(
-                                          position: index);
-                                    },
-                                    label: const Text("Delete"),
-                                  ),
-                                ],
+                                    TextButton.icon(
+                                      style: ButtonStyle(
+                                          shape: WidgetStateProperty.all(
+                                              RoundedRectangleBorder(
+                                                  side: const BorderSide(
+                                                    color: Colors
+                                                        .red, // your color here
+                                                    width: 1,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)))),
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        color: Colors.red,
+                                      ),
+                                      onPressed: () async {
+                                        await orderController.getCancelOrdersApi(
+                                            position: index);
+                                      },
+                                      label: const Text("Delete"),
+                                    ),
+                                  ],
+                                ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(top: 8.0),
