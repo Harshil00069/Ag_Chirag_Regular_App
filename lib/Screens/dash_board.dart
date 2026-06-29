@@ -106,8 +106,8 @@ class _DashBoardScreenState extends State<DashBoardScreen>
                 Tab(text: "Search Share", icon: Icon(Icons.search)),
                 Tab(text: "Watch List", icon: Icon(Icons.list_alt_outlined)),
                 Tab(text: "Orders", icon: Icon(Icons.bookmark_border)),
-                Tab(text: "Basket Order", icon: Icon(Icons.shopping_basket)),
                 Tab(text: "Position", icon: Icon(Icons.polymer_sharp)),
+                Tab(text: "Basket Order", icon: Icon(Icons.shopping_basket)),
               ],
             ),
           ),
@@ -118,8 +118,9 @@ class _DashBoardScreenState extends State<DashBoardScreen>
               SearchShare(),
               WatchListScreen(),
               MyOrder(),
+              ExtraPositionScreen(),
               NewBasketOrderScreen(),
-              ExtraPositionScreen()
+
             ],
           ),
         ),
